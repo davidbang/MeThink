@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1-rc2/jquery.js"></script>
+    <title>
+      {% block title %}
+      Title
+      {% endblock title %}
+    </title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/flatly/bootstrap.min.css">
+  </head>
+  <body>
+    {% block navbar %} 
+<nav class="navbar navbar-inverse">
+   <div class="nav navbar-nav">
+     <div class="nav navbar-left">
+       <a class="navbar-center" href="/">
+       </a>
+     </div>
+  </div>
+</nav>
+  
+ {% endblock navbar %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class="flashed_messages_list">
+  {% for message in messages %}
+  <div class="alert alert-info" role="alert"> <li class="flashed_message error">{{ message }}</li></div>
+  {% endfor %}  </ul>
+{% endif %}
+{% endwith %}
+<center>
+  <h1>
+	{% block header %}
+	Title Page
+	{% endblock header %}
+      </h1>
+      {% block body %}
+      this is the body
+      {% endblock body %}
+    </center>
+  </body>
+</html>
