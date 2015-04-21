@@ -5,7 +5,7 @@ var path = require("path");
 var app = express();
 var server = http.Server(app);
 var io = require('socket.io')(server);
-var db = require('database.js');
+var db = require('./database.js');
 
 app.engine("html", swig.renderFile);
 app.set("view engine", "html");
@@ -24,10 +24,11 @@ app.post('/login', function(req, res){
     var name = req.body.name;
     var password = req.body.password;
     //db function here to check
-    if (db.validLogin(name, password)[0]){
-	//set session to username
-	//redirect to home page
-    };
+    db.validLogin(name, password, function(passed, msg){
+        //if (passed){
+	    //set session to username
+	    //redirect to home page
+    });
     res.render("login.html", {name:name});
 });
 
