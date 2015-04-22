@@ -25,9 +25,15 @@ app.post('/login', function(req, res){
     var password = req.body.password;
     //db function here to check
     db.validLogin(name, password, function(passed, msg){
-        //if (passed){
+        if (true){
 	    //set session to username
+			print name;
 	    //redirect to home page
+			//res.render(home.html);
+		}
+		else {
+			print "invalid login";
+		}
     });
     res.render("login.html", {name:name});
 });
