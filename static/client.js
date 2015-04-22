@@ -28,7 +28,7 @@ canvas.on("mouseup mouseleave", function(){
 var lastEmit = $.now();
 
 canvas.on("mousemove", function(e){
-    if (drawing && $.now() - lastEmit > 30){
+    if (drawing && $.now() - lastEmit > 10){
         socket.emit("move", {
             oldX: mouse.x,
             oldY: mouse.y,

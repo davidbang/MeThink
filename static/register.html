@@ -10,12 +10,12 @@ Register
 
 {% block body %}
 <br>
-<form>
-  <input type="text" class="form-control" style="width:auto" name="username" placeholder="Username">
+<form method="POST">
+  <input type="text" class="form-control" style="width:auto" name="username"  placeholder="Username">
   <br>
    <input type="password" class="form-control" style="width:auto" name="password" placeholder="Password">
   <br>
-  <input type="submit" class="btn btn-success" name="register" value="Register">
+  <input type="submit" class="btn btn-success">
   <br>
 </form>
 {% endblock body %}

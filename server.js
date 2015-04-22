@@ -5,11 +5,16 @@ var path = require("path");
 var app = express();
 var server = http.Server(app);
 var io = require('socket.io')(server);
+var bodyParser = require('body-parser');
 var db = require('./database.js');
 
 app.engine("html", swig.renderFile);
 app.set("view engine", "html");
 app.set("views", path.join(__dirname,'/static'));
+app.use(bodyParser.json()); 
+app.use(bodyParser.urlencoded({
+    extended: true
+})); 
 
 //routes here
 app.get('/', function(req, res){
@@ -21,21 +26,22 @@ app.get('/login', function(req, res){
 });
 
 app.post('/login', function(req, res){
-    var name = req.body.name;
+    var name = req.body.username;
     var password = req.body.password;
     //db function here to check
     db.validLogin(name, password, function(passed, msg){
-        if (true){
+	console.log(name + "," + password);
+	res.render("login.html", {name:name});
+        if (passed){
 	    //set session to username
-			print name;
+	    
 	    //redirect to home page
-			//res.render(home.html);
-		}
-		else {
-			print "invalid login";
-		}
+	    //res.render(home.html);
+	    console.log("Logged in.");
+	}else {
+	    console.log("Failed to login.");
+	};
     });
-    res.render("login.html", {name:name});
 });
 
 //routes end here
