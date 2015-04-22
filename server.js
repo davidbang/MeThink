@@ -30,16 +30,16 @@ app.post('/login', function(req, res){
     var password = req.body.password;
     //db function here to check
     db.validLogin(name, password, function(passed, msg){
-	res.render("login.html", {name:name});
+	res.render("login.html");
         if (passed){
-	    //set session to username
+	        //set session to username
 	    
-	    //redirect to home page
-	    //res.render(home.html);
-	    console.log("Logged in.");
-	}else {
-	    console.log("Failed to login.");
-	};
+	        //redirect to home page
+	        //res.render(home.html);
+	        console.log("Logged in.");
+	    }else {
+	        console.log(msg);
+	    };
     });
 });
 
