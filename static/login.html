@@ -1,3 +1,12 @@
+<style>
+body {
+background-image: url("background.jpg");
+background-repeat: no-repeat;
+background-position: center;
+background-size: 1300px 1000px;
+background-color: black;
+}
+</style>
 {% extends "base.html" %}
 
 {% block title %}
@@ -9,7 +18,8 @@ Login
 {% endblock header %}
 
 {% block body %}
-<br>
+<body>
+<br><!--Make login options thing dive from top of screen slowly using javascript-->
 <a href="../static/register">Register Page</a> <br>
 <form method="POST">
   <input type="text" class="form-control" style="width:auto" name="username"  placeholder="Username">
@@ -19,4 +29,5 @@ Login
   <input type="submit" class="btn btn-success">
   <br>
 </form>
+</body>
 {% endblock body %}
