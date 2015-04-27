@@ -19,6 +19,9 @@ Timeline:
 --Additional features with enough time--
 
 Roles:
+
 Alex Libman: Database + Websocket
+
 David Bang: CSS + backup routing
+
 David Dvorkin: Routing + Game Logic
