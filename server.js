@@ -22,7 +22,7 @@ app.get('/', function(req, res){
 });
 
 app.get('/login', function(req, res){
-    res.render("login.html");
+    res.render("index.html");
 });
 
 app.post('/login', function(req, res){
@@ -41,6 +41,10 @@ app.post('/login', function(req, res){
 	        console.log(msg);
 	    };
     });
+});
+
+app.get('/register', function(req, res){
+    res.render("register.html");
 });
 
 //routes end here
