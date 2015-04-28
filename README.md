@@ -1,4 +1,4 @@
-# Im⍺gin⍺ry
+# ImΩginΩry
 
 Timeline:
 
@@ -20,7 +20,7 @@ Timeline:
 
 Roles:
 
-Alex Libman: Database + Websocket
+⍺lex Libman: Database + Websocket
 
 David Bang: CSS + backup routing
 
