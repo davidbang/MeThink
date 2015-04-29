@@ -1,8 +1,9 @@
 # MeThinkΩ
-Description:
+##Description:
+
 Real Time Pictionary using Node.js. Uses socket.io and express to provide real time communication functionality. Multiple users will be able to join a game room and have the ability to draw on the canvas, while other players attempt to guess the depiction/word. A library of the game objects will be implemented in which users can add objects. Potential extensions to the application are that it can be used as a real time service in which users interact with each other on a communal canvas.
 
-Timeline:
+##Timeline:
 
 4/30 - Have accounts working.
 
@@ -20,7 +21,7 @@ Timeline:
 
 --Additional features with enough time--
 
-Roles:
+##Roles:
 
 ⍺lex Libman: Database + Websocket
 
