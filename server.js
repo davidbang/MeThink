@@ -16,13 +16,20 @@ app.use(bodyParser.urlencoded({
     extended: true
 })); 
 
+var loginRequired = function(req, res, next){
+    console.log("here");
+    //if user logged in
+    next();
+    //else redirect to login route
+};
+
 //routes here
-app.get('/', function(req, res){
+app.get('/', loginRequired, function(req, res){
     res.render("index.html");
 });
 
 app.get('/login', function(req, res){
-    res.render("index.html");
+    res.render("login.html");
 });
 
 app.post('/login', function(req, res){

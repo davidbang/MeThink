@@ -36,5 +36,7 @@ var register = function(user, pword, pwordConfirm, callback){
     });
 };
 
+//WORDS FUNCTION
+
 exports.validLogin = authenticate;
 exports.register = register;
