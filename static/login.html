@@ -20,7 +20,9 @@ Login
 {% block body %}
 <body>
 <br><!--Make login options thing dive from top of screen slowly using javascript-->
-<a href="../static/register">Register Page</a> <br>
+<a href="../register">Register Page</a> <br>
+<div class="jumbotron">
+   <div class="container">
 <form method="POST">
   <input type="text" class="form-control" style="width:auto" name="username"  placeholder="Username">
   <br>
@@ -29,5 +31,7 @@ Login
   <input type="submit" class="btn btn-success">
   <br>
 </form>
+</div>
+</div>
 </body>
 {% endblock body %}
