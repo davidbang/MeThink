@@ -54,6 +54,26 @@ app.get('/register', function(req, res){
     res.render("register.html");
 });
 
+app.post('/register', function(req, res){
+    var name = req.body.username;
+    var password = req.body.password;
+    var confirmPassword = req.body.passwordConfirm;
+    //db function here to check
+    db.register(name, password, confirmPassword, function(passed, msg){
+	//res.render("register.html");
+        if (passed){
+	    //set session to username
+	    res.render("login.html")
+	    //redirect to home page
+	    //res.render(home.html);
+	    console.log("Registered under Libman Enterprises!");
+	}else {
+	    res.render("register.html");
+	    console.log("xd try again xd");
+	};
+    });
+});
+
 //routes end here
 
 app.use(express.static(path.join(__dirname,"static")));
