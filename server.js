@@ -6,26 +6,31 @@ var app = express();
 var server = http.Server(app);
 var io = require('socket.io')(server);
 var bodyParser = require('body-parser');
+var session = require("express-session");
 var db = require('./database.js');
 
 app.engine("html", swig.renderFile);
 app.set("view engine", "html");
 app.set("views", path.join(__dirname,'/static'));
+app.use(session({secret: "secret"}));
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({
     extended: true
-})); 
+}));
 
 var loginRequired = function(req, res, next){
-    console.log("here");
     //if user logged in
-    next();
+    if (req.session.name){
+        next();
+    }else{
+        res.redirect('/login');
+    };
     //else redirect to login route
 };
 
 //routes here
 app.get('/', loginRequired, function(req, res){
-    res.render("index.html");
+    res.render("index.html", {username: req.session.name});
 });
 
 app.get('/login', function(req, res){
@@ -37,14 +42,13 @@ app.post('/login', function(req, res){
     var password = req.body.password;
     //db function here to check
     db.validLogin(name, password, function(passed, msg){
-	res.render("login.html");
         if (passed){
 	        //set session to username
-	    
+	        req.session.name = name;
 	        //redirect to home page
-	        //res.render(home.html);
-	        console.log("Logged in.");
-	    }else {
+            res.redirect('/');
+	    }else{
+            res.render("login.html");
 	        console.log(msg);
 	    };
     });
@@ -58,19 +62,17 @@ app.post('/register', function(req, res){
     var name = req.body.username;
     var password = req.body.password;
     var confirmPassword = req.body.passwordConfirm;
-    //db function here to check
     db.register(name, password, confirmPassword, function(passed, msg){
-	//res.render("register.html");
         if (passed){
-	    //set session to username
-	    res.render("login.html")
-	    //redirect to home page
-	    //res.render(home.html);
-	    console.log("Registered under Libman Enterprises!");
-	}else {
-	    res.render("register.html");
-	    console.log("xd try again xd");
-	};
+	        //set session to username
+	        req.session.name = name;
+	        //redirect to home page
+            res.redirect('/');
+	        console.log("Registered under Libman Enterprises!");
+	    }else{
+	        res.render("register.html");
+	        console.log(msg);
+	    };
     });
 });
 

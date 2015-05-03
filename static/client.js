@@ -17,8 +17,8 @@ var drawLine = function(x1, y1, x2, y2){
 
 canvas.on("mousedown", function(e){
     drawing = true;
-    mouse.x = e.pageX; //account for canvas padding later
-    mouse.y = e.pageY;
+    mouse.x = e.pageX - canvas.offset().left;
+    mouse.y = e.pageY - canvas.offset().top;
 });
             
 canvas.on("mouseup mouseleave", function(){
@@ -29,16 +29,18 @@ var lastEmit = $.now();
 
 canvas.on("mousemove", function(e){
     if (drawing && $.now() - lastEmit > 10){
+        var newX = e.pageX - canvas.offset().left;
+        var newY = e.pageY - canvas.offset().top;
         socket.emit("move", {
             oldX: mouse.x,
             oldY: mouse.y,
-            x: e.pageX,
-            y: e.pageY
+            x: newX,
+            y: newY
         });
         lastEmit = $.now();
-        drawLine(mouse.x, mouse.y, e.pageX, e.pageY);
-        mouse.x = e.pageX;
-        mouse.y = e.pageY;
+        drawLine(mouse.x, mouse.y, newX, newY);
+        mouse.x = newX;
+        mouse.y = newY;
     };
 });
 

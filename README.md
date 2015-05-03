@@ -23,7 +23,7 @@ Real Time Pictionary using Node.js. Uses socket.io and express to provide real t
 
 ##Roles:
 
-⍺lex Libman: Database + Websocket
+Alex Libman: Database + Websocket
 
 David Bang: CSS + backup routing
 
