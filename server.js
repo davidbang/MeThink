@@ -28,16 +28,26 @@ var loginRequired = function(req, res, next){
     //else redirect to login route
 };
 
+var noLoginRequired = function(req, res, next){
+    //if user logged in
+    if (req.session.name){
+        res.redirect('/');
+    }else{
+        next();
+    };
+    //else redirect to index route
+};
+
 //routes here
 app.get('/', loginRequired, function(req, res){
     res.render("index.html", {username: req.session.name});
 });
 
-app.get('/login', function(req, res){
+app.get('/login', noLoginRequired, function(req, res){
     res.render("login.html");
 });
 
-app.post('/login', function(req, res){
+app.post('/login', noLoginRequired, function(req, res){
     var name = req.body.username;
     var password = req.body.password;
     //db function here to check
