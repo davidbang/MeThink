@@ -10,11 +10,13 @@ background-color: black;
 {% extends "base.html" %}
 
 {% block title %}
-Login
+  Login
 {% endblock title %}
 
 {% block header %}
-Login
+<font size="10" face="Comic sans MS">
+  Login
+  </font>
 {% endblock header %}
 
 {% block body %}
@@ -25,7 +27,7 @@ Login
      <form method="POST">
   <input type="text" class="form-control" style="width:300px" name="username"  placeholder="Username">
   <br>
-   <input type="password" class="form-control" style="width:auto" name="password" placeholder="Password">
+   <input type="password" class="form-control" style="width:300px" name="password" placeholder="Password">
   <br>
   <input type="submit" class="btn btn-success">
   <br>

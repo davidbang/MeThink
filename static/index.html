@@ -1,13 +1,51 @@
 <!doctype html>
 <html>
-    <head>
+  <header>
+    <style>
+      #canvas{
+      position: absolute;
+      top: 50px;
+      left: 50px;
+      }
+      #chat{
+      position:absolute;
+      top: 100px;
+      left: 580px;
+      }
+      #innerchat{
+      position:relative;
+      top: 10px;
+      }
+      .jumbotron {
+      min-height: 600px;
+      width: 550px
+      }
+    </style>
+    </header>  <head>
+      
         <title>Drawing</title>
         <script src="lib/jquery.js"></script>
-        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/flatly/bootstrap.min.css">
     </head>
     <body>
+      <center>
         <h1>{{username}}</h1>
-        <canvas id="canvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+	<div>
+	  <div id="canvas">
+          <canvas id="canvas" width="600" height="600" style="border:1px solid #000000;"></canvas>
+	  </div>
+	  <div id="chat">
+	    <div class="container" id="innerchat">
+	      <div class="jumbotron">
+	      </div>
+	    </div>
+	    <form>
+	      <p>
+		{{username}}<input type="text" class="form-control" style="width:400px; display:inline" name="chat"  placeholder="Write something here">
+	      <button type="button" id="chatbutton" class="btn btn-success" name="Send"> Send </button></p> 
+	    </form> 
+   </div>
+    <center>
         <script src="/socket.io/socket.io.js"></script>
         <script src="client.js"></script>
     </body>
