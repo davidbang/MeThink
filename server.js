@@ -29,13 +29,11 @@ var loginRequired = function(req, res, next){
 };
 
 var noLoginRequired = function(req, res, next){
-    //if user logged in
     if (req.session.name){
         res.redirect('/');
     }else{
         next();
     };
-    //else redirect to index route
 };
 
 //routes here
@@ -53,18 +51,18 @@ app.post('/login', noLoginRequired, function(req, res){
     //db function here to check
     db.validLogin(name, password, function(passed, msg){
         if (passed){
-	        //set session to username
-	        req.session.name = name;
-	        //redirect to home page
+	    //set session to username
+	    req.session.name = name;
+	    //redirect to home page
             res.redirect('/');
-	    }else{
+	}else{
             res.render("login.html");
-	        console.log(msg);
-	    };
+	    console.log(msg);
+	};
     });
 });
 
-app.get('/register', function(req, res){
+app.get('/register', noLoginRequired, function(req, res){
     res.render("register.html");
 });
 
@@ -74,21 +72,23 @@ app.post('/register', function(req, res){
     var confirmPassword = req.body.passwordConfirm;
     db.register(name, password, confirmPassword, function(passed, msg){
         if (passed){
-	        //set session to username
-	        req.session.name = name;
-	        //redirect to home page
+	    //set session to username
+	    req.session.name = name;
+	    //redirect to home page
             res.redirect('/');
-	        console.log("Registered under Libman Enterprises!");
-	    }else{
-	        res.render("register.html");
-	        console.log(msg);
-	    };
+	    console.log("Registered under Libman Enterprises!");
+	}else{
+	    res.render("register.html");
+	    console.log(msg);
+	};
     });
 });
 
 //routes end here
 
 app.use(express.static(path.join(__dirname,"static")));
+
+var clientsConnected = {};
 
 server.listen(5000, function(){
     console.log("Server started on port 5000");
@@ -97,5 +97,21 @@ server.listen(5000, function(){
 io.sockets.on("connection",function(socket){
     socket.on("move", function(data){
         socket.broadcast.emit("draw",data);
+    };
+    socket.on("disconnect", function(){
+	if (socket.id in clientsConnected){
+	    var leaver = clientsConnected[socket.id];
+	    delete(clientsConnected[socket.id]);
+	    console.log(leaver + " disconnected");
+	    io.emit("serverMessage", leaver + " has left.");
+	};
+    });
+    socket.on("entry", function(entry){
+	socket.broadcast.emit("entry", entry);
+    });
+    socket.on("newUser", function(user){
+	clientsConnected[socket.id] = user;
+	console.log(user + " connected");
+	socket.broadcast.emit("serverMessage", user + " has joined.");
     });
 });
