@@ -7,7 +7,7 @@ var mouse = {
 var socket = io();
 
 var canvas = $("#canvas");
-var ctx = canvas[0].getContext("2d");
+var ctx = null;//canvas[0].getContext("2d");
 
 var drawLine = function(x1, y1, x2, y2){
     ctx.moveTo(x1, y1);
@@ -43,6 +43,17 @@ canvas.on("mousemove", function(e){
         mouse.y = newY;
     };
 });
+
+var chat = $("#innerchat");
+
+var chatButton = $("#chatbutton");
+chatButton.on("click", function(e){
+    var msg = $("#message").val();
+    chat.append(msg + "<br>");
+    socket.emit("entry", msg);
+});
+
+socket.emit("chatQuery");
 
 socket.on("draw", function(data){
     drawLine(data.oldX, data.oldY, data.x, data.y);

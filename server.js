@@ -97,7 +97,7 @@ server.listen(5000, function(){
 io.sockets.on("connection",function(socket){
     socket.on("move", function(data){
         socket.broadcast.emit("draw",data);
-    };
+    });
     socket.on("disconnect", function(){
 	if (socket.id in clientsConnected){
 	    var leaver = clientsConnected[socket.id];

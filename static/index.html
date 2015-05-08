@@ -35,13 +35,13 @@
           <canvas id="canvas" width="600" height="600" style="border:1px solid #000000;"></canvas>
 	  </div>
 	  <div id="chat">
-	    <div class="container" id="innerchat">
-	      <div class="jumbotron">
+	    <div class="container">
+	      <div class="jumbotron" id="innerchat">
 	      </div>
 	    </div>
 	    <form>
 	      <p>
-		{{username}}<input type="text" class="form-control" style="width:400px; display:inline" name="chat"  placeholder="Write something here">
+		{{username}}<input type="text" id="message" class="form-control" style="width:400px; display:inline" name="chat" placeholder="Write something here">
 	      <button type="button" id="chatbutton" class="btn btn-success" name="Send"> Send </button></p> 
 	    </form> 
    </div>
