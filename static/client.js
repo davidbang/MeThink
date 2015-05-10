@@ -9,7 +9,7 @@ var username = "{{username}}";
 socket.emit("newUser", username);
 
 var canvas = $("#canvas");
-var ctx = null;//canvas[0].getContext("2d");
+var ctx = canvas[0].getContext("2d");
 
 var drawLine = function(x1, y1, x2, y2){
     ctx.moveTo(x1, y1);
