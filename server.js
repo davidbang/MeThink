@@ -10,6 +10,7 @@ var session = require("express-session");
 var db = require('./database.js');
 
 app.engine("html", swig.renderFile);
+app.engine("js", swig.renderFile);
 app.set("view engine", "html");
 app.set("views", path.join(__dirname,'/static'));
 app.use(session({secret: "secret"}));
@@ -41,6 +42,10 @@ app.get('/', loginRequired, function(req, res){
     res.render("index.html", {username: req.session.name});
 });
 
+app.get('/client.js', function(req,res){
+    res.render("client.js", {username: req.session.name});
+});
+
 app.get('/login', noLoginRequired, function(req, res){
     res.render("login.html");
 });
@@ -51,14 +56,14 @@ app.post('/login', noLoginRequired, function(req, res){
     //db function here to check
     db.validLogin(name, password, function(passed, msg){
         if (passed){
-	    //set session to username
-	    req.session.name = name;
-	    //redirect to home page
+	        //set session to username
+	        req.session.name = name;
+	        //redirect to home page
             res.redirect('/');
-	}else{
+	    }else{
             res.render("login.html");
-	    console.log(msg);
-	};
+	        console.log(msg);
+	    };
     });
 });
 
@@ -72,15 +77,15 @@ app.post('/register', function(req, res){
     var confirmPassword = req.body.passwordConfirm;
     db.register(name, password, confirmPassword, function(passed, msg){
         if (passed){
-	    //set session to username
-	    req.session.name = name;
-	    //redirect to home page
+	        //set session to username
+	        req.session.name = name;
+	        //redirect to home page
             res.redirect('/');
-	    console.log("Registered under Libman Enterprises!");
-	}else{
-	    res.render("register.html");
-	    console.log(msg);
-	};
+	        console.log("Registered under Libman Enterprises!");
+	    }else{
+	        res.render("register.html");
+	        console.log(msg);
+	    };
     });
 });
 
@@ -99,19 +104,24 @@ io.sockets.on("connection",function(socket){
         socket.broadcast.emit("draw",data);
     });
     socket.on("disconnect", function(){
-	if (socket.id in clientsConnected){
-	    var leaver = clientsConnected[socket.id];
-	    delete(clientsConnected[socket.id]);
-	    console.log(leaver + " disconnected");
-	    io.emit("serverMessage", leaver + " has left.");
-	};
+	    if (socket.id in clientsConnected){
+	        var leaver = clientsConnected[socket.id];
+	        delete(clientsConnected[socket.id]);
+	        console.log(leaver + " disconnected");
+	        io.emit("serverMessage", leaver + " has left.");
+	    };
     });
     socket.on("entry", function(entry){
-	socket.broadcast.emit("entry", entry);
+	    socket.broadcast.emit("entry", {
+            msg: entry,
+            user: clientsConnected[socket.id]
+        });
     });
     socket.on("newUser", function(user){
-	clientsConnected[socket.id] = user;
-	console.log(user + " connected");
-	socket.broadcast.emit("serverMessage", user + " has joined.");
+        if (! (socket.id in clientsConnected)){
+	        clientsConnected[socket.id] = user;
+	        console.log(user + " connected");
+	        socket.broadcast.emit("serverMessage", user + " has joined.");
+        };
     });
 });

@@ -5,6 +5,8 @@ var mouse = {
 };
 
 var socket = io();
+var username = "{{username}}";
+socket.emit("newUser", username);
 
 var canvas = $("#canvas");
 var ctx = null;//canvas[0].getContext("2d");
@@ -45,16 +47,48 @@ canvas.on("mousemove", function(e){
 });
 
 var chat = $("#innerchat");
-
+var msgInput = $("#message");
 var chatButton = $("#chatbutton");
-chatButton.on("click", function(e){
-    var msg = $("#message").val();
-    chat.append(msg + "<br>");
+
+var appendToChat = function(text){
+    chat.append(text + "<br>");
+};
+
+var appendEntryToChat = function(data){
+    var text = "<b>" + data["user"] + "</b>" + ": " + data["msg"];
+    appendToChat(text);
+};
+
+var processMsg = function(){
+    var msg = msgInput.val();
+    msgInput.val("");
+    chat.append("<b>" + username + "</b>: " + msg + "<br>");
     socket.emit("entry", msg);
+    msgInput.focus();
+};
+
+msgInput.keydown(function(e){
+    if (e.keyCode == 13){
+        e.preventDefault();
+        processMsg();
+    };
+});
+
+chatButton.click(function(e){
+    e.preventDefault();
+    processMsg();
 });
 
 socket.emit("chatQuery");
 
 socket.on("draw", function(data){
     drawLine(data.oldX, data.oldY, data.x, data.y);
+});
+
+socket.on("entry", function(data){
+    appendEntryToChat(data);
+});
+
+socket.on("serverMessage", function(msg){
+    appendToChat("<i>" + msg + "</i>");
 });
