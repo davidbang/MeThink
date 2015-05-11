@@ -20,6 +20,47 @@
       min-height: 600px;
       width: 550px
       }
+      .chat
+      {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      }
+
+      .chat li
+      {
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 1px dotted #B3A9A9;
+      }
+
+      .chat li.left .chat-body
+      {
+      margin-left: 60px;
+      }
+
+      .chat li.right .chat-body
+      {
+      margin-right: 60px;
+      }
+
+
+      .chat li .chat-body p
+      {
+      margin: 0;
+      color: #777777;
+      }
+
+      .panel .slidedown .glyphicon, .chat .glyphicon
+      {
+      margin-right: 5px;
+      }
+
+      .panel-body
+      {
+      overflow-y: scroll;
+      height: 250px;
+      }
     </style>
     </header>  <head>
       
@@ -36,16 +77,32 @@
 	  </div>
 	  <div id="chat">
 	    <div class="container">
-	      <div class="jumbotron" id="innerchat">
+	      <div class="jumbotron">
+		<div class="row">
+		  <div class="col-md-5">
+		    <div class="panel panel-primary">
+                      <div class="panel-heading">
+			<span class="glyphicon glyphicon-comment"></span> Chat
+		      </div>
+                    </div>
+                    <div class="panel-body">
+                      <ul class="chat" id="innerchat">
+		      </ul>
+		    </div>
+		  </div>
+		</div>
 	      </div>
 	    </div>
-	    <form>
-	      <p>
-		{{username}}<input type="text" id="message" class="form-control" style="width:400px; display:inline" name="chat" autocomplete="off">
-	      <button type="button" id="chatbutton" class="btn btn-success" name="Send"> Send </button></p> 
-	    </form> 
-   </div>
-    <center>
+	    <div class="panel-footer">
+              <div class="input-group">
+		<form>
+                        {{username}} <input id="btn-input" type="text" id="message" class="form-control input-sm" style="width:400px; display:inline" placeholder="Type your message here..." />
+                        <span class="input-group-btn">
+                            <button class="btn btn-warning btn-sm" id="chatbutton" style="width:400px; display:inline">
+                                Send</button>
+		</form>
+	      
+      </center>
         <script src="/socket.io/socket.io.js"></script>
         <script src="client.js"></script>
     </body>
