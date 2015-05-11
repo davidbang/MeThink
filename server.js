@@ -56,14 +56,14 @@ app.post('/login', noLoginRequired, function(req, res){
     //db function here to check
     db.validLogin(name, password, function(passed, msg){
         if (passed){
-	        //set session to username
-	        req.session.name = name;
-	        //redirect to home page
+	    //set session to username
+	    req.session.name = name;
+	    //redirect to home page
             res.redirect('/');
-	    }else{
+	}else{
             res.render("login.html");
-	        console.log(msg);
-	    };
+	    console.log(msg);
+	};
     });
 });
 
@@ -77,15 +77,15 @@ app.post('/register', function(req, res){
     var confirmPassword = req.body.passwordConfirm;
     db.register(name, password, confirmPassword, function(passed, msg){
         if (passed){
-	        //set session to username
-	        req.session.name = name;
-	        //redirect to home page
+	    //set session to username
+	    req.session.name = name;
+	    //redirect to home page
             res.redirect('/');
-	        console.log("Registered under Libman Enterprises!");
-	    }else{
-	        res.render("register.html");
-	        console.log(msg);
-	    };
+	    console.log("Registered under Libman Enterprises!");
+	}else{
+	    res.render("register.html");
+	    console.log(msg);
+	};
     });
 });
 
@@ -94,6 +94,17 @@ app.post('/register', function(req, res){
 app.use(express.static(path.join(__dirname,"static")));
 
 var clientsConnected = {};
+var words = [
+    ["jelly","fish"]
+];
+
+var checkChatEntry = function(entry){
+    if (entry != ""){
+	//check if entry is word entered
+	//return true if it is .lowercase
+	//account for trailing spaces and other anomalies
+    };
+};
 
 server.listen(5000, function(){
     console.log("Server started on port 5000");
@@ -104,24 +115,31 @@ io.sockets.on("connection",function(socket){
         socket.broadcast.emit("draw",data);
     });
     socket.on("disconnect", function(){
-	    if (socket.id in clientsConnected){
-	        var leaver = clientsConnected[socket.id];
-	        delete(clientsConnected[socket.id]);
-	        console.log(leaver + " disconnected");
-	        io.emit("serverMessage", leaver + " has left.");
-	    };
+	if (socket.id in clientsConnected){
+	    var leaver = clientsConnected[socket.id];
+	    delete(clientsConnected[socket.id]);
+	    console.log(leaver + " disconnected");
+	    io.emit("serverMessage", leaver + " has left.");
+	};
     });
     socket.on("entry", function(entry){
+	var person = clientsConnected[socket.id];
+	if (checkChatEntry(entry)){
+	    //update game data structure (English: Next round)
+	    //emit updates to clients
+	};
+	if (entry != ""){
 	    socket.broadcast.emit("entry", {
-            msg: entry,
-            user: clientsConnected[socket.id]
-        });
+		msg: entry,
+		user: clientsConnected[socket.id]
+            });
+	};
     });
     socket.on("newUser", function(user){
         if (! (socket.id in clientsConnected)){
-	        clientsConnected[socket.id] = user;
-	        console.log(user + " connected");
-	        socket.broadcast.emit("serverMessage", user + " has joined.");
+	    clientsConnected[socket.id] = user;
+	    console.log(user + " connected");
+	    socket.broadcast.emit("serverMessage", user + " has joined.");
         };
     });
 });
