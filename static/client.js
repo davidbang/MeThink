@@ -51,7 +51,7 @@ var msgInput = $("#message");
 var chatButton = $("#chatbutton");
 
 var appendToChat = function(text){
-    chat.append(text + "<br>");
+    chat.append("<li>" + text "</li>");
 };
 
 var appendEntryToChat = function(data){
