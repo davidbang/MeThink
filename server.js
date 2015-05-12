@@ -100,7 +100,7 @@ var words = [
 
 var checkChatEntry = function(entry){
     if (entry != ""){
-	//check if entry is word entered
+	 return entry.toLowerCase().replace(/ /g,'') == words[0][0];
 	//return true if it is .lowercase
 	//account for trailing spaces and other anomalies
     };
