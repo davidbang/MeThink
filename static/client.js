@@ -51,7 +51,7 @@ var msgInput = $("#message");
 var chatButton = $("#chatbutton");
 
 var appendToChat = function(text){
-    chat.append("<li>" + text "</li>");
+    chat.append("<tr><td>" + text + "</td></tr>");
 };
 
 var appendEntryToChat = function(data){
@@ -62,7 +62,7 @@ var appendEntryToChat = function(data){
 var processMsg = function(){
     var msg = msgInput.val();
     msgInput.val("");
-    chat.append("<b>" + username + "</b>: " + msg + "<br>");
+    appendToChat("<b>" + username + "</b>: " + msg);
     socket.emit("entry", msg);
     msgInput.focus();
 };
