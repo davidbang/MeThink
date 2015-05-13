@@ -36,12 +36,12 @@
 
       .chat li.left .chat-body
       {
-      margin-left: 60px;
+      margin-left: 0px;
       }
 
       .chat li.right .chat-body
       {
-      margin-right: 60px;
+      margin-right: 0px;
       }
 
 
@@ -55,10 +55,13 @@
       {
       margin-right: 5px;
       }
-
+      .inputgroup
+      {
+      overflow: visible;
+      }
       .panel-body
       {
-      overflow-y: scroll;
+      overflow-y: auto;
       height: 250px;
       }
     </style>
@@ -78,30 +81,26 @@
 	  <div id="chat">
 	    <div class="container">
 	      <div class="jumbotron">
-		<div>
-		  <div>
 		    <div class="panel panel-primary">
                       <div class="panel-heading">
 			<span class="glyphicon glyphicon-comment"></span> Chat
 		      </div>
-                    </div>
+		    </div>
                     <div class="panel-body">
-                      <table class="chat" id="innerchat">
+                      <table class="chat" id="innerchat" align="left">
 		      </table>
 		    </div>
-		  </div>
-		</div>
+		    <div class="panel-footer">
+		      <span class="inputgroup">
+			<form>
+                          {{username}} <input type="text" id="message" class="form-control input-sm" style="width:200px; display:inline" placeholder="Type your message here..." >
+                          <button class="btn btn-warning btn-sm" id="chatbutton" style="width:80px">
+                            Send</button>
+			</form>
+		    </div>
+		    </span>
 	      </div>
 	    </div>
-	    <div class="panel-footer">
-              <div class="input-group">
-		<form>
-                        {{username}} <input type="text" id="message" class="form-control input-sm" style="width:400px; display:inline" placeholder="Type your message here..." />
-                        <span class="input-group-btn">
-                            <button class="btn btn-warning btn-sm" id="chatbutton" style="width:400px; display:inline">
-                                Send</button>
-		</form>
-	      
       </center>
         <script src="/socket.io/socket.io.js"></script>
         <script src="client.js"></script>
