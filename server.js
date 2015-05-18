@@ -98,6 +98,38 @@ var words = [
     ["jelly","fish"]
 ];
 
+var game = {
+    players: [],
+    scores: {},
+    whoseTurn: 0,
+    started: false,
+    winner: null,
+    nextTurn: function(){
+        this.whoseTurn += 1;
+        if (this.whoseTurn >= this.players.length){
+            this.whoseTurn = 0;
+        };
+    },
+    addPlayer: function(player){
+        if (! this.started){
+            this.players.append(player);
+            this.scores[player] = 0;
+        }
+    },
+    removePlayer: function(player){
+        var index = this.players.indexOf(player);
+        this.players.splice(index,1);
+        delete(this.scores[player]);
+        if (this.whoseTurn >= this.players.length){
+            this.whoseTurn = 0;
+        };
+    },
+    scorePlayer: function(player){
+        this.scores[player] += 1;
+        this.nextTurn();
+    }
+};
+
 var checkChatEntry = function(entry){
     if (entry != ""){
 	 return entry.toLowerCase().replace(/ /g,'') == words[0][0];
