@@ -49,6 +49,7 @@ canvas.on("mousemove", function(e){
 var chat = $("#innerchat");
 var msgInput = $("#message");
 var chatButton = $("#chatbutton");
+var playerList = $("#names");
 
 var appendToChat = function(text){
     chat.append("<tr><td>" + text + "</td></tr>");
@@ -65,6 +66,13 @@ var processMsg = function(){
     appendToChat("<b>" + username + "</b>: " + msg);
     socket.emit("entry", msg);
     msgInput.focus();
+};
+
+var updatePlayerList = function(scores){
+    playerList.innerHtml = "";
+    for each (player in scores){
+	playerList.append("<tr><td>" + player + "</td><td>" + scores[player] + "</td></tr>");
+    };
 };
 
 msgInput.keydown(function(e){
@@ -91,4 +99,8 @@ socket.on("entry", function(data){
 
 socket.on("serverMessage", function(msg){
     appendToChat("<i>" + msg + "</i>");
+});
+
+socket.on("gameUpdate", function(data){
+    updatePlayerList(data["scores"]);
 });
