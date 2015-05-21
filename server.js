@@ -159,6 +159,11 @@ io.sockets.on("connection",function(socket){
 	if (socket.id in clientsConnected){
 	    var leaver = clientsConnected[socket.id];
 	    baseGame.removePlayer(leaver);
+	    io.emit("gameUpdate", {
+		turn: baseGame.whoseTurn,
+		players: baseGame.players,
+		scores: baseGame.scores
+	    });
 	    delete(clientsConnected[socket.id]);
 	    console.log(leaver + " disconnected");
 	    io.emit("serverMessage", leaver + " has left.");
@@ -184,6 +189,12 @@ io.sockets.on("connection",function(socket){
     socket.on("newUser", function(user){
         if (! (socket.id in clientsConnected)){
 	    clientsConnected[socket.id] = user;
+	    baseGame.addPlayer(user);
+	    io.emit("gameUpdate", {
+		turn: baseGame.whoseTurn,
+		players: baseGame.players,
+		scores: baseGame.scores
+	    });
 	    console.log(user + " connected");
 	    socket.broadcast.emit("serverMessage", user + " has joined.");
         };
