@@ -133,9 +133,11 @@ var game = function(){
     };
 };
 
+var baseGame = new game();
+
 var checkChatEntry = function(entry){
     if (entry != ""){
-	 return entry.toLowerCase().replace(/ /g,'') == game.words[0][0];
+	 return entry.toLowerCase().replace(/ /g,'') == baseGame.words[0][0];
 	//return true if it is .lowercase
 	//account for trailing spaces and other anomalies
     };
@@ -148,7 +150,7 @@ server.listen(5000, function(){
 io.sockets.on("connection",function(socket){
     socket.on("move", function(data){
 	var person = clientsConnected[socket.id];
-	if (person == game.players[game.whoseTurn]){
+	if (person == baseGame.players[baseGame.whoseTurn]){
 	    //only player whose turn it is to draw can draw
             socket.broadcast.emit("draw",data);
 	};
@@ -156,7 +158,7 @@ io.sockets.on("connection",function(socket){
     socket.on("disconnect", function(){
 	if (socket.id in clientsConnected){
 	    var leaver = clientsConnected[socket.id];
-	    game.removePlayer(leaver);
+	    baseGame.removePlayer(leaver);
 	    delete(clientsConnected[socket.id]);
 	    console.log(leaver + " disconnected");
 	    io.emit("serverMessage", leaver + " has left.");
@@ -164,12 +166,12 @@ io.sockets.on("connection",function(socket){
     });
     socket.on("entry", function(entry){
 	var person = clientsConnected[socket.id];
-	if (person != game.players[game.whoseTurn] && checkChatEntry(entry)){
-	    game.scorePlayer(person);
+	if (person != baseGame.players[baseGame.whoseTurn] && checkChatEntry(entry)){
+	    baseGame.scorePlayer(person);
 	    io.emit("gameUpdate", {
-		turn: game.whoseTurn,
-		players: game.players,
-		scores: game.scores
+		turn: baseGame.whoseTurn,
+		players: baseGame.players,
+		scores: baseGame.scores
 	    });
 	};
 	if (entry != ""){
