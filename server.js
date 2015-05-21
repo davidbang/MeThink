@@ -153,6 +153,7 @@ io.sockets.on("connection",function(socket){
     socket.on("disconnect", function(){
 	if (socket.id in clientsConnected){
 	    var leaver = clientsConnected[socket.id];
+	    game.removePlayer(leaver);
 	    delete(clientsConnected[socket.id]);
 	    console.log(leaver + " disconnected");
 	    io.emit("serverMessage", leaver + " has left.");
@@ -162,7 +163,7 @@ io.sockets.on("connection",function(socket){
 	var person = clientsConnected[socket.id];
 	if (person != game.players[game.whoseTurn] && checkChatEntry(entry)){
 	    game.scorePlayer(person);
-	    socket.emit("gameUpdate", {
+	    io.emit("gameUpdate", {
 		turn: game.whoseTurn,
 		players: game.players,
 		scores: game.scores
