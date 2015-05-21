@@ -95,7 +95,8 @@ app.use(express.static(path.join(__dirname,"static")));
 
 var clientsConnected = {};
 var words = [
-    ["jelly","fish"] //read in from db later
+    ["jelly","fish"],
+    ["peanut", "butter"] //read in from db later
 ];
 
 var game = {
@@ -104,8 +105,10 @@ var game = {
     whoseTurn: 0,
     started: false,
     winner: null,
+    words: words,
     nextTurn: function(){
         this.whoseTurn += 1;
+	this.words.splice(0,1);
         if (this.whoseTurn >= this.players.length){
             this.whoseTurn = 0;
         };
@@ -132,7 +135,7 @@ var game = {
 
 var checkChatEntry = function(entry){
     if (entry != ""){
-	 return entry.toLowerCase().replace(/ /g,'') == words[0][0];
+	 return entry.toLowerCase().replace(/ /g,'') == game.words[0][0];
 	//return true if it is .lowercase
 	//account for trailing spaces and other anomalies
     };
