@@ -95,7 +95,7 @@ app.use(express.static(path.join(__dirname,"static")));
 
 var clientsConnected = {};
 var words = [
-    ["jelly","fish"]
+    ["jelly","fish"] //read in from db later
 ];
 
 var game = {
@@ -112,7 +112,7 @@ var game = {
     },
     addPlayer: function(player){
         if (! this.started){
-            this.players.append(player);
+            this.players.push(player);
             this.scores[player] = 0;
         }
     },
@@ -144,7 +144,11 @@ server.listen(5000, function(){
 
 io.sockets.on("connection",function(socket){
     socket.on("move", function(data){
-        socket.broadcast.emit("draw",data);
+	var person = clientsConnected[socket.id];
+	if (person == game.players[game.whoseTurn]){
+	    //only player whose turn it is to draw can draw
+            socket.broadcast.emit("draw",data);
+	};
     });
     socket.on("disconnect", function(){
 	if (socket.id in clientsConnected){
@@ -156,9 +160,13 @@ io.sockets.on("connection",function(socket){
     });
     socket.on("entry", function(entry){
 	var person = clientsConnected[socket.id];
-	if (checkChatEntry(entry)){
-	    //update game data structure (English: Next round)
-	    //emit updates to clients
+	if (person != game.players[game.whoseTurn] && checkChatEntry(entry)){
+	    game.scorePlayer(person);
+	    socket.emit("gameUpdate", {
+		turn: game.whoseTurn,
+		players: game.players,
+		scores: game.scores
+	    });
 	};
 	if (entry != ""){
 	    socket.broadcast.emit("entry", {
