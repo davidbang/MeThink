@@ -99,38 +99,38 @@ var words = [
     ["peanut", "butter"] //read in from db later
 ];
 
-var game = {
-    players: [],
-    scores: {},
-    whoseTurn: 0,
-    started: false,
-    winner: null,
-    words: words,
-    nextTurn: function(){
+var game = function(){
+    this.players = [];
+    this.scores = {};
+    this.whoseTurn = 0;
+    this.started = false;
+    this.winner = null;
+    this.words = words;
+    this.nextTurn = function(){
         this.whoseTurn += 1;
 	this.words.splice(0,1);
         if (this.whoseTurn >= this.players.length){
             this.whoseTurn = 0;
         };
-    },
-    addPlayer: function(player){
+    };
+    this.addPlayer = function(player){
         if (! this.started){
             this.players.push(player);
             this.scores[player] = 0;
         }
-    },
-    removePlayer: function(player){
+    };
+    this.removePlayer = function(player){
         var index = this.players.indexOf(player);
         this.players.splice(index,1);
         delete(this.scores[player]);
         if (this.whoseTurn >= this.players.length){
             this.whoseTurn = 0;
         };
-    },
-    scorePlayer: function(player){
+    };
+    this.scorePlayer = function(player){
         this.scores[player] += 1;
         this.nextTurn();
-    }
+    };
 };
 
 var checkChatEntry = function(entry){
@@ -175,7 +175,7 @@ io.sockets.on("connection",function(socket){
 	if (entry != ""){
 	    socket.broadcast.emit("entry", {
 		msg: entry,
-		user: clientsConnected[socket.id]
+		user: person
             });
 	};
     });
