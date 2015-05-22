@@ -1,4 +1,5 @@
 var drawing = false;
+var yourTurn = false;
 var mouse = {
     x: 0,
     y: 0
@@ -30,7 +31,7 @@ canvas.on("mouseup mouseleave", function(){
 var lastEmit = $.now();
 
 canvas.on("mousemove", function(e){
-    if (drawing && $.now() - lastEmit > 10){
+    if (drawing && yourTurn && $.now() - lastEmit > 10){
         var newX = e.pageX - canvas.offset().left;
         var newY = e.pageY - canvas.offset().top;
         socket.emit("move", {
@@ -69,8 +70,8 @@ var processMsg = function(){
 };
 
 var updatePlayerList = function(scores){
-    playerList.innerHtml = "";
-    for each (player in scores){
+    playerList.html("");
+    for (player in scores){
 	playerList.append("<tr><td>" + player + "</td><td>" + scores[player] + "</td></tr>");
     };
 };
@@ -103,4 +104,5 @@ socket.on("serverMessage", function(msg){
 
 socket.on("gameUpdate", function(data){
     updatePlayerList(data["scores"]);
+    yourTurn = data["players"][data["turn"]] == "{{username}}";
 });

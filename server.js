@@ -137,7 +137,9 @@ var baseGame = new game();
 
 var checkChatEntry = function(entry){
     if (entry != ""){
-	 return entry.toLowerCase().replace(/ /g,'') == baseGame.words[0][0];
+	console.log(entry.toLowerCase().replace(/ /g,''));
+	console.log(baseGame.words[0][0]);
+	return entry.toLowerCase().replace(/ /g,'') == baseGame.words[0][0];
 	//return true if it is .lowercase
 	//account for trailing spaces and other anomalies
     };
