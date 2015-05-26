@@ -106,12 +106,14 @@ var game = function(){
     this.started = false;
     this.winner = null;
     this.words = words;
+    this.timer = 90;
     this.nextTurn = function(){
         this.whoseTurn += 1;
 	this.words.splice(0,1);
         if (this.whoseTurn >= this.players.length){
             this.whoseTurn = 0;
         };
+	io.emit("nextTurn");
     };
     this.addPlayer = function(player){
         if (! this.started){
@@ -131,14 +133,25 @@ var game = function(){
         this.scores[player] += 1;
         this.nextTurn();
     };
+    this.countDown = function(){
+	this.timer -= 1;
+	if (this.timer <= 0){
+	    this.timer = 90;
+	    io.emit("gameMessage", "Time has run out with noone guessing the words!");
+	    this.nextTurn();
+	    io.emit("gameUpdate", {
+		turn: this.whoseTurn,
+		players: this.players,
+		scores: this.scores
+	    });
+	};
+    };
 };
 
 var baseGame = new game();
 
 var checkChatEntry = function(entry){
     if (entry != ""){
-	console.log(entry.toLowerCase().replace(/ /g,''));
-	console.log(baseGame.words[0][0]);
 	return entry.toLowerCase().replace(/ /g,'') == baseGame.words[0][0];
 	//return true if it is .lowercase
 	//account for trailing spaces and other anomalies
@@ -164,7 +177,7 @@ io.sockets.on("connection",function(socket){
 	    io.emit("gameUpdate", {
 		turn: baseGame.whoseTurn,
 		players: baseGame.players,
-		scores: baseGame.scores
+		scores: baseGame.scores,
 	    });
 	    delete(clientsConnected[socket.id]);
 	    console.log(leaver + " disconnected");
@@ -180,6 +193,7 @@ io.sockets.on("connection",function(socket){
 		players: baseGame.players,
 		scores: baseGame.scores
 	    });
+	    io.emit("gameMessage", person + " has guessed the words, which were '" + baseGame.words[0][0] + " " + baseGame.words[0][1] + ".");
 	};
 	if (entry != ""){
 	    socket.broadcast.emit("entry", {
@@ -195,7 +209,7 @@ io.sockets.on("connection",function(socket){
 	    io.emit("gameUpdate", {
 		turn: baseGame.whoseTurn,
 		players: baseGame.players,
-		scores: baseGame.scores
+		scores: baseGame.scores,
 	    });
 	    console.log(user + " connected");
 	    socket.broadcast.emit("serverMessage", user + " has joined.");
