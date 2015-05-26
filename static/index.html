@@ -9,21 +9,29 @@
       }
       #canvas{
       position: absolute;
-      top: 100px;
-      left: 100px;
+      top: 120px;
+      left: 4%;
       }
       #chat{
       position:absolute;
-      top: 100px;
-      left: 580px;
+      top: 120px;
+      right: 30px;
+      height:600px;
+      width: 580px;
       }
       #innerchat{
       position:relative;
       top: 10px;
       }
-      .jumbotron {
-      min-height: 600px;
-      width: 550px
+      #firstjumbo {
+      height: 600px;
+      width: 370px;
+      padding: 1px;
+      }
+      #secondjumbo {
+      height: 300px;
+      width: 100px;
+      padding: 1px;
       }
       .chat
       {
@@ -31,31 +39,25 @@
       margin: 0;
       padding: 0;
       }
-
       .chat li
       {
       margin-bottom: 10px;
       padding-bottom: 5px;
       border-bottom: 1px dotted #B3A9A9;
       }
-
       .chat li.left .chat-body
       {
       margin-left: 0px;
       }
-
       .chat li.right .chat-body
       {
       margin-right: 0px;
       }
-
-
       .chat li .chat-body p
       {
       margin: 0;
       color: #777777;
       }
-
       .panel .slidedown .glyphicon, .chat .glyphicon
       {
       margin-right: 5px;
@@ -70,57 +72,70 @@
       height: 500px;
       }
     </style>
-    </header>  <head>
-      
-        <title>Drawing</title>
-        <script src="lib/jquery.js"></script>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/flatly/bootstrap.min.css">
-    </head>
-    <body>
-      <center>
-        <h1>{{username}}</h1>
-	<div>
-	  <div>
-          <canvas id="canvas" width="600" height="600" style="border:1px solid #000000;"></canvas>
-	  </div>
-	  <div id="chat" style="width:600px;position:relative;left:400px; top:-10px">
-	    <div class="container" style="width:600px">
-	      <div class="jumbotron">
-		    <div class="panel panel-primary">
-                      <div class="panel-heading">
-			<span class="glyphicon glyphicon-comment"></span> Chat
-		      </div>
-		    </div>
-		    <div>
-		      <div class="container" align="left" style="width:200px">
-			<div class="panel panel-primary">
-			  <div class="panel-heading">Online Users</div>
-			  <div class="panel-body">
+  </header> <head>
+    <title>Drawing</title>
+    <script src="lib/jquery.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
 
-			
-			    <table id="names" align="left" style="border-style:solid; border-width:2px;"> <thead> <tr> <th> Username </th> <th> Score </th></tr></thead>
-			    </table>
-			  </div>
-			</div>
-		      </div>
-		    </div>
-                    <div class="panel-body">
-                      <table class="chat" id="innerchat" align="left">
-		      </table>
-		    </div>
-		    <div class="panel-footer">
-		      <span class="inputgroup">
-			<form>
-                          {{username}} <input type="text" id="message" class="form-control input-sm" style="width:200px; display:inline" placeholder="Type your message here..." >
-                          <button class="btn btn-warning btn-sm" id="chatbutton" style="width:80px">
-                            Send</button>
-			</form>
-		    </div>
-		    </span>
+  </head>
+  <body>
+    <center>
+    <div class="wrapper" style="margin-top:0px">
+      <div class="container" style="font-size: 80px; height:100px; padding: 10px"> 
+	<h2>MeThink: Player Name {{username}}</h2>
+      </div>
+      <div>
+	<div>
+	  <canvas id="canvas" width="600" height="600" style="border:2px solid #000000;opacity:0.8;z-index:20;background:white"></canvas>
+	</div>
+	<div id="chat" width="550px" height="600">
+	  <div class="jumbotron" id="firstjumbo"  width="370" height="600" style="padding:1px;float:right;">
+	      <div class="panel panel-primary">
+		<div class="panel-heading">
+		  <span class="glyphicon glyphicon-comment"></span> Chat
+		</div>
 	      </div>
+	      <div class="panel-body" style="margin-top:-30px;margin-bottom:-20px">
+		<table class="chat" id="innerchat" align="left" style="color:black">
+		</table>
+	      </div>
+	      <div class="panel-footer" style="margin-bottom:-30px;padding: 0px;">
+		<span class="inputgroup">
+		  <form style="color:black">
+		    {{username}} <input type="text" id="message" class="form-control input-sm" style="width:200px; display:inline; color: black" align="left" placeholder="Type your message here..." >
+		    <button class="btn btn-warning btn-sm" id="chatbutton" style="width:80px">
+		      Send</button>
+		  </form>
+	      </span>
+	      </div>
+	  </div>
+	  <div class="panel panel-primary" style="height:300px; width:120px; padding:0px;position:absolute;right:370px;">
+	    <div class="panel-heading" style="width:120px;height:40px;padding:0px;margin:0px;margin-bottom:0px;float:center;"><span align="center">Username:Score</span></div>
+	    <div class="panel-body" align="left" style="height:240px;width:120px;"><br> <br>
+	      <table id="names" align="left" style="float:left; color:black; border-style:solid; border-width:0px;"> <thead> <tr> <th> Username: </th> <th> Score </th></tr></thead>
+	      </table>
 	    </div>
-      </center>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="client.js"></script>
-    </body>
+	  </div>
+	</div>
+    </center>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+	<ul class="bg-bubbles">
+	  <li></li>
+	  <li></li>
+	  <li></li>
+	  <li></li>
+	  <li></li>
+	  <li></li>
+	  <li></li>
+	  <li></li>
+	  <li></li>
+	  <li></li>
+	</ul>
+    </div>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script src="index.js"></script>
+  </body>
 </html>

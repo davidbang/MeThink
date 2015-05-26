@@ -72,7 +72,7 @@ var processMsg = function(){
 var updatePlayerList = function(scores){
     playerList.html("");
     for (player in scores){
-	playerList.append("<tr><td>" + player + "</td><td>" + scores[player] + "</td></tr>");
+	playerList.append("<tr><td>" + player + ": </td><td>" + scores[player] + "</td></tr>");
     };
 };
 
