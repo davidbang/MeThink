@@ -177,7 +177,7 @@ io.sockets.on("connection",function(socket){
 	    io.emit("gameUpdate", {
 		turn: baseGame.whoseTurn,
 		players: baseGame.players,
-		scores: baseGame.scores,
+		scores: baseGame.scores
 	    });
 	    delete(clientsConnected[socket.id]);
 	    console.log(leaver + " disconnected");
@@ -209,7 +209,7 @@ io.sockets.on("connection",function(socket){
 	    io.emit("gameUpdate", {
 		turn: baseGame.whoseTurn,
 		players: baseGame.players,
-		scores: baseGame.scores,
+		scores: baseGame.scores
 	    });
 	    console.log(user + " connected");
 	    socket.broadcast.emit("serverMessage", user + " has joined.");
