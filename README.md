@@ -23,24 +23,40 @@ Real Time Pictionary using Node.js. Uses socket.io and express to provide real t
 
 ##Installation Instructions:
 Install Node.js from https://nodejs.org/.
+
 Extract files.
+
 Cd into node-version-<Varies for node version>
+
 Run in virtual enviroment in the node directory
+
 ./configure
+
 make
+
 sudo make install
 
 afterwards go to project folder (MeThink) and install all neccessary frameworks.
+
 npm install express
+
 npm install http
+
 npm install swig
+
 npm install path
+
 npm install mongojs
+
 npm install socket.io
+
 npm install body-parser
+
 npm install express-session
 
-After install everything input into command line
+
+After installing everything, input into command line
+
 node server.js to run our project
 
 ##Roles:
