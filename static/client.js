@@ -47,6 +47,10 @@ canvas.on("mousemove", function(e){
     };
 });
 
+var clearCanvas = function () {
+    ctx.clearRect (0, 0, canvas.width(), canvas.height());
+};
+
 var chat = $("#innerchat");
 var msgInput = $("#message");
 var chatButton = $("#chatbutton");
@@ -59,6 +63,10 @@ var appendToChat = function(text){
 var appendEntryToChat = function(data){
     var text = "<b>" + data["user"] + "</b>" + ": " + data["msg"];
     appendToChat(text);
+};
+
+var appendGameMsgToChat = function(data){
+    appendToChat("<b style='color:red'>" + data + "</b>");
 };
 
 var processMsg = function(){
@@ -102,7 +110,13 @@ socket.on("serverMessage", function(msg){
     appendToChat("<i>" + msg + "</i>");
 });
 
+socket.on("gameMessage", function(data){
+    appendGameMsgToChat(data);
+});
+
 socket.on("gameUpdate", function(data){
     updatePlayerList(data["scores"]);
     yourTurn = data["players"][data["turn"]] == "{{username}}";
 });
+
+socket.on("newTurn", clearCanvas());
