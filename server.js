@@ -61,8 +61,8 @@ app.post('/login', noLoginRequired, function(req, res){
 	    //redirect to home page
             res.redirect('/');
 	}else{
-            res.render("login.html");
-	    console.log(msg);
+            res.render("login.html", {error: msg});
+	    //console.log(msg);
 	};
     });
 });
@@ -84,7 +84,7 @@ app.post('/register', function(req, res){
 	    console.log("Registered under Libman Enterprises!");
 	}else{
 	    res.render("register.html");
-	    console.log(msg);
+	    //console.log(msg);
 	};
     });
 });
@@ -187,13 +187,13 @@ io.sockets.on("connection",function(socket){
     socket.on("entry", function(entry){
 	var person = clientsConnected[socket.id];
 	if (person != baseGame.players[baseGame.whoseTurn] && checkChatEntry(entry)){
+	    io.emit("gameMessage", person + " has guessed the word, which was '" + baseGame.words[0][0] + baseGame.words[0][1] + ".");
 	    baseGame.scorePlayer(person);
 	    io.emit("gameUpdate", {
 		turn: baseGame.whoseTurn,
 		players: baseGame.players,
 		scores: baseGame.scores
 	    });
-	    io.emit("gameMessage", person + " has guessed the word, which was '" + baseGame.words[0][0] + baseGame.words[0][1] + ".");
 	};
 	if (entry != ""){
 	    socket.broadcast.emit("entry", {
