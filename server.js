@@ -152,7 +152,7 @@ var baseGame = new game();
 
 var checkChatEntry = function(entry){
     if (entry != ""){
-	return entry.toLowerCase().replace(/ /g,'') == baseGame.words[0][0];
+	return entry.toLowerCase().replace(/ /g,'') == baseGame.words[0][0] + baseGame.words[0][1];
 	//return true if it is .lowercase
 	//account for trailing spaces and other anomalies
     };
@@ -193,7 +193,7 @@ io.sockets.on("connection",function(socket){
 		players: baseGame.players,
 		scores: baseGame.scores
 	    });
-	    io.emit("gameMessage", person + " has guessed the words, which were '" + baseGame.words[0][0] + " " + baseGame.words[0][1] + ".");
+	    io.emit("gameMessage", person + " has guessed the word, which was '" + baseGame.words[0][0] + baseGame.words[0][1] + ".");
 	};
 	if (entry != ""){
 	    socket.broadcast.emit("entry", {
