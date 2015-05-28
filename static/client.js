@@ -49,6 +49,7 @@ canvas.on("mousemove", function(e){
 
 var clearCanvas = function () {
     ctx.clearRect (0, 0, canvas.width(), canvas.height());
+    ctx.beginPath();
 };
 
 var chat = $("#innerchat");
@@ -119,4 +120,4 @@ socket.on("gameUpdate", function(data){
     yourTurn = data["players"][data["turn"]] == "{{username}}";
 });
 
-socket.on("nextTurn", clearCanvas());
+socket.on("nextTurn", clearCanvas);
