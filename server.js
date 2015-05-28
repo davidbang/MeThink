@@ -187,7 +187,7 @@ io.sockets.on("connection",function(socket){
     socket.on("entry", function(entry){
 	var person = clientsConnected[socket.id];
 	if (person != baseGame.players[baseGame.whoseTurn] && checkChatEntry(entry)){
-	    io.emit("gameMessage", person + " has guessed the word, which was '" + baseGame.words[0][0] + baseGame.words[0][1] + ".");
+	    io.emit("gameMessage", person + " has guessed the word, which was '" + baseGame.words[0][0] + baseGame.words[0][1] + "'.");
 	    baseGame.scorePlayer(person);
 	    io.emit("gameUpdate", {
 		turn: baseGame.whoseTurn,

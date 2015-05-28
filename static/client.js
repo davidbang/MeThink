@@ -119,4 +119,4 @@ socket.on("gameUpdate", function(data){
     yourTurn = data["players"][data["turn"]] == "{{username}}";
 });
 
-socket.on("newTurn", clearCanvas());
+socket.on("nextTurn", clearCanvas());
