@@ -20,6 +20,12 @@
       </div>
     </nav>
     <div class="wrapper">
+      {% if error != null %}
+      <div class="alert alert-danger alert-dismissible" style="z-index: 50;" role="alert">
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	<strong>Error!</strong> {{error}}
+      </div>
+      {% endif %}
       <div class="container"> 
 	<h1>
 	  <font size="10" face="Comic sans MS">
