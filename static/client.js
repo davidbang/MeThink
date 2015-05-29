@@ -52,6 +52,16 @@ var clearCanvas = function () {
     ctx.beginPath();
 };
 
+var clearButton = $("#clearCanv");
+
+clearButton.click(function(e){
+    if (yourTurn && $.now() - lastEmit > 10){
+	e.preventDefault();
+	clearCanvas();
+	console.log ("clear success");
+    };
+});
+
 var chat = $("#innerchat");
 var msgInput = $("#message");
 var chatButton = $("#chatbutton");
