@@ -113,7 +113,7 @@ var game = function(){
         if (this.whoseTurn >= this.players.length){
             this.whoseTurn = 0;
         };
-	io.emit("nextTurn");
+	io.emit("clearCanvas");
     };
     this.addPlayer = function(player){
         if (! this.started){
@@ -215,4 +215,9 @@ io.sockets.on("connection",function(socket){
 	    socket.broadcast.emit("serverMessage", user + " has joined.");
         };
     });
+    socket.on("clearCanvas", function(){
+	if (clientsConnected[socket.id] = baseGame.players[baseGame.whoseTurn]){
+	    socket.broadcast.emit("clearCanvas");
+	};
+    };
 });
