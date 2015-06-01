@@ -215,9 +215,11 @@ io.sockets.on("connection",function(socket){
 	    socket.broadcast.emit("serverMessage", user + " has joined.");
         };
     });
-    socket.on("clearCanvas", function(){
-	if (clientsConnected[socket.id] = baseGame.players[baseGame.whoseTurn]){
+    socket.on("requestClear", function(){
+	var player = clientsConnected[socket.id];
+	if (player == baseGame.players[baseGame.whoseTurn]){
 	    socket.broadcast.emit("clearCanvas");
+	    socket.emit("gameMessage", player + " has cleared the canvas.");
 	};
-    };
+    });
 });

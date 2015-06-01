@@ -58,7 +58,9 @@ clearButton.click(function(e){
     if (yourTurn && $.now() - lastEmit > 10){
 	e.preventDefault();
 	clearCanvas();
-	console.log ("clear success");
+	socket.emit("requestClear")
+	
+	//console.log ("clear success");
     };
 });
 
@@ -130,4 +132,4 @@ socket.on("gameUpdate", function(data){
     yourTurn = data["players"][data["turn"]] == "{{username}}";
 });
 
-socket.on("nextTurn", clearCanvas);
+socket.on("clearCanvas", clearCanvas);
