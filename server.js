@@ -96,7 +96,10 @@ app.use(express.static(path.join(__dirname,"static")));
 var clientsConnected = {};
 var words = [
     ["jelly","fish"],
-    ["peanut", "butter"] //read in from db later
+    ["peanut", "butter"],
+    ["fish", "sticks"],
+    ["water", "melon"],
+    ["table", "cloth"]//read in from db later
 ];
 
 var game = function(){
@@ -104,15 +107,33 @@ var game = function(){
     this.scores = {};
     this.whoseTurn = 0;
     this.started = false;
-    this.winner = null;
+    this.winners = [];
     this.words = words;
     this.timer = 90;
+    this.loop = 0;
     this.nextTurn = function(){
+	this.timer = 90;
         this.whoseTurn += 1;
 	this.words.splice(0,1);
         if (this.whoseTurn >= this.players.length){
+	    this.loop += 1;
+	    if (this.loop == 2){
+		//End the game if 2 rotations of rounds have been played
+		var max = 0;
+		for (player in players){
+		    var score = scores[player];
+		    if (score > max){
+			max = score;
+			this.winners = [player];
+		    }else if (scores[player] == max){
+			this.winners.push(player);
+		    };
+		};
+		io.emit("winners", this.winners);
+	    };
             this.whoseTurn = 0;
         };
+	io.emit("nextTurn");
 	io.emit("clearCanvas");
     };
     this.addPlayer = function(player){
