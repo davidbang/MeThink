@@ -143,12 +143,13 @@ var game = function(){
         }
     };
     this.removePlayer = function(player){
+	if (player == this.players[this.whoseTurn]){
+	    this.whoseTurn -= 1;
+	    this.nextTurn();
+	};
         var index = this.players.indexOf(player);
         this.players.splice(index,1);
         delete(this.scores[player]);
-        if (this.whoseTurn >= this.players.length){
-            this.whoseTurn = 0;
-        };
     };
     this.scorePlayer = function(player){
         this.scores[player] += 1;
@@ -169,7 +170,10 @@ var game = function(){
     };
 };
 
-var baseGame = new game();
+var games = {};
+
+games[1] = new game();
+var baseGame = games[1];
 
 var checkChatEntry = function(entry){
     if (entry != ""){
@@ -244,3 +248,13 @@ io.sockets.on("connection",function(socket){
 	};
     });
 });
+
+var updateGameTimers = function(){
+    for (g in games){
+	if (games[g].started){
+	    games[g].countDown();
+	};
+    };
+};
+
+setInterval(updateGameTimers, 1000);
