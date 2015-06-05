@@ -4,6 +4,28 @@ var mouse = {
     x: 0,
     y: 0
 };
+var startgame = false;
+var RealPlayerList = [];
+
+var resetTimer = function() {
+    var time = 90;
+    var startTime = Date.now(),
+	diff,
+        minutes,
+        seconds;
+    function countdown() {
+	diff = time - (((Date.now() - startTime) / 1000) | 0);
+	seconds = (diff % 60) | 0;
+
+	minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        document.getElementById("timer").innerHTML = minutes + ":" + seconds;
+    };
+
+    countdown();
+    setInterval(countdown, 1000);
+};
 
 var socket = io();
 var username = "{{username}}";
@@ -91,6 +113,10 @@ var processMsg = function(){
 };
 
 var updatePlayerList = function(scores){
+    RealPlayerList = Object.keys(scores);
+    if (RealPlayerList.length > 1 && ! startGame){
+	//make start button visible
+    };
     playerList.html("");
     for (player in scores){
 	playerList.append("<tr><td>" + player + ": </td><td>" + scores[player] + "</td></tr>");
@@ -133,3 +159,5 @@ socket.on("gameUpdate", function(data){
 });
 
 socket.on("clearCanvas", clearCanvas);
+
+socket.on("nextTurn", resetTimer);
