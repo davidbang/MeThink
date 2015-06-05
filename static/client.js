@@ -4,7 +4,7 @@ var mouse = {
     x: 0,
     y: 0
 };
-var startgame = false;
+var startGame = false;
 var RealPlayerList = [];
 
 var resetTimer = function() {
@@ -20,7 +20,7 @@ var resetTimer = function() {
 	minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
-        document.getElementById("timer").innerHTML = minutes + ":" + seconds;
+        document.getElementById("timer").innerHTML = "Timer: " + minutes + ":" + seconds;
     };
 
     countdown();
@@ -75,6 +75,14 @@ var clearCanvas = function () {
 };
 
 var clearButton = $("#clearCanv");
+var startButton = $("#startGame");
+
+startButton.click(function(e) {
+    if (RealPlayerList.length > 1 && !startGame){
+	startGame = true;
+    };
+});
+
 
 clearButton.click(function(e){
     if (yourTurn && $.now() - lastEmit > 10){
