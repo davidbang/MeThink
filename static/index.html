@@ -19,6 +19,9 @@
       height:600px;
       width: 580px;
       }
+      td{
+      text-align: left;
+      };
       #innerchat{
       position:relative;
       top: 10px;
@@ -87,11 +90,11 @@
       </div>
       <div>
 	<div>
-	  <canvas id="canvas" width="600" height="600" style="border:2px solid #000000;opacity:0.8;z-index:20;background:white"></canvas>
+	  <canvas id="canvas" width="800" height="600" style="border:2px solid #000000;opacity:0.8;z-index:20;background:white"></canvas>
 	 <form> <button id="clearCanv" type="button" class="btn btn-info">Clear Canvas</button> </form>
 	</div>
 	<div id="chat" width="550px" height="600">
-	  <div class="jumbotron" id="firstjumbo"  width="370" height="600" style="padding:1px;float:right;">
+	  <div class="jumbotron" id="firstjumbo"  width="370" height="600" style="padding:0px;float:right;">
 	      <div class="panel panel-primary">
 		<div class="panel-heading">
 		  <span class="glyphicon glyphicon-comment"></span> Chat
@@ -104,7 +107,7 @@
 	      <div class="panel-footer" style="margin-bottom:-30px;padding: 0px;">
 		<span class="inputgroup">
 		  <form style="color:black">
-		    {{username}} <input type="text" id="message" class="form-control input-sm" style="width:200px; display:inline; color: black" align="left" placeholder="Type your message here..." >
+		    {{username}} <input type="text" id="message" class="form-control input-sm" style="test-align: left; width:200px; display:inline; color: black" align="left" placeholder="Type your message here..." >
 		    <button class="btn btn-warning btn-sm" id="chatbutton" style="width:80px">
 		      Send</button>
 		  </form>
@@ -114,7 +117,7 @@
 	  <div class="panel panel-primary" style="height:300px; width:120px; padding:0px;position:absolute;right:370px;">
 	    <div class="panel-heading" style="width:120px;height:40px;padding:0px;margin:0px;margin-bottom:0px;float:center;"><span align="center">Username:Score</span></div>
 	    <div class="panel-body" align="left" style="height:240px;width:120px;"><br> <br>
-	      <table id="names" align="left" style="float:left; color:black; border-style:solid; border-width:0px;"> <thead> <tr> <th> Username: </th> <th> Score </th></tr></thead>
+	      <table id="names" align="left" style="text-align:left; color:black; border-style:solid; border-width:0px;"> <thead> <tr> <th> Username: </th> <th> Score </th></tr></thead>
 	      </table>
 	    </div>
 	  </div>

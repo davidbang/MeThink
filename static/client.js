@@ -34,6 +34,12 @@ socket.emit("newUser", username);
 var canvas = $("#canvas");
 var ctx = canvas[0].getContext("2d");
 
+ctx.beginPath();
+ctx.moveTo(400,0);
+ctx.lineTo(400,600);
+ctx.stroke();
+ctx.beginPath();
+
 var drawLine = function(x1, y1, x2, y2){
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
@@ -71,6 +77,10 @@ canvas.on("mousemove", function(e){
 
 var clearCanvas = function () {
     ctx.clearRect (0, 0, canvas.width(), canvas.height());
+    ctx.beginPath();
+    ctx.moveTo(400,0);
+    ctx.lineTo(400,600);
+    ctx.stroke();
     ctx.beginPath();
 };
 
