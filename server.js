@@ -104,6 +104,7 @@ var words = [
 
 var game = function(){
     this.players = [];
+    this.playerSockets = {};
     this.scores = {};
     this.whoseTurn = 0;
     this.started = false;
@@ -133,14 +134,16 @@ var game = function(){
 	    };
             this.whoseTurn = 0;
         };
+	this.playerSockets[this.players[this.whoseTurn]].emit("gameMessage", "Your word is " + this.words[0][0] + "," + this.words[0][1] + ".");
 	io.emit("nextTurn");
 	io.emit("clearCanvas");
     };
-    this.addPlayer = function(player){
+    this.addPlayer = function(player, socket){
         if (! this.started){
             this.players.push(player);
             this.scores[player] = 0;
-        }
+	    this.playerSockets[player] = socket;
+        };
     };
     this.removePlayer = function(player){
 	if (player == this.players[this.whoseTurn]){
@@ -150,6 +153,7 @@ var game = function(){
         var index = this.players.indexOf(player);
         this.players.splice(index,1);
         delete(this.scores[player]);
+	delete(this.playerSockets[player]);
     };
     this.scorePlayer = function(player){
         this.scores[player] += 1;
@@ -170,6 +174,7 @@ var game = function(){
     };
 };
 
+var clientsConnected = {};
 var games = {};
 
 games[1] = new game();
@@ -189,7 +194,7 @@ server.listen(5000, function(){
 
 io.sockets.on("connection",function(socket){
     socket.on("move", function(data){
-	var person = clientsConnected[socket.id];
+	var person = clientsConnected[socket.id]["name"];
 	if (person == baseGame.players[baseGame.whoseTurn]){
 	    //only player whose turn it is to draw can draw
             socket.broadcast.emit("draw",data);
@@ -197,7 +202,7 @@ io.sockets.on("connection",function(socket){
     });
     socket.on("disconnect", function(){
 	if (socket.id in clientsConnected){
-	    var leaver = clientsConnected[socket.id];
+	    var leaver = clientsConnected[socket.id]["name"];
 	    baseGame.removePlayer(leaver);
 	    io.emit("gameUpdate", {
 		turn: baseGame.whoseTurn,
@@ -210,7 +215,7 @@ io.sockets.on("connection",function(socket){
 	};
     });
     socket.on("entry", function(entry){
-	var person = clientsConnected[socket.id];
+	var person = clientsConnected[socket.id]["name"];
 	if (person != baseGame.players[baseGame.whoseTurn] && checkChatEntry(entry)){
 	    io.emit("gameMessage", person + " has guessed the word, which was '" + baseGame.words[0][0] + baseGame.words[0][1] + "'.");
 	    baseGame.scorePlayer(person);
@@ -229,8 +234,8 @@ io.sockets.on("connection",function(socket){
     });
     socket.on("newUser", function(user){
         if (! (socket.id in clientsConnected)){
-	    clientsConnected[socket.id] = user;
-	    baseGame.addPlayer(user);
+	    clientsConnected[socket.id] = {"name": user, "socket": socket};
+	    baseGame.addPlayer(user, socket);
 	    io.emit("gameUpdate", {
 		turn: baseGame.whoseTurn,
 		players: baseGame.players,
@@ -241,10 +246,10 @@ io.sockets.on("connection",function(socket){
         };
     });
     socket.on("requestClear", function(){
-	var player = clientsConnected[socket.id];
+	var player = clientsConnected[socket.id]["name"];
 	if (player == baseGame.players[baseGame.whoseTurn]){
 	    socket.broadcast.emit("clearCanvas");
-	    socket.emit("gameMessage", player + " has cleared the canvas.");
+	    io.emit("gameMessage", player + " has cleared the canvas.");
 	};
     });
 });
