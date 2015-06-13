@@ -180,7 +180,7 @@ var game = function(){
     };
 };
 
-var clientsConnected = {};
+//var clientsConnected = {};
 
 var createNewGame = function(user){
     if (! (user in games)){
@@ -206,28 +206,27 @@ server.listen(5000, function(){
 
 io.sockets.on("connection",function(socket){
     socket.on("move", function(data){
-	var person = clientsConnected[socket.id]["name"];
+	var person = socket.name;
 	if (person == baseGame.players[baseGame.whoseTurn]){
 	    //only player whose turn it is to draw can draw
             socket.broadcast.emit("draw",data);
 	};
     });
     socket.on("disconnect", function(){
-	if (socket.id in clientsConnected){
-	    var leaver = clientsConnected[socket.id]["name"];
+	if (socket.name){
+	    var leaver = socket.name;
 	    baseGame.removePlayer(leaver);
 	    io.emit("gameUpdate", {
 		turn: baseGame.whoseTurn,
 		players: baseGame.players,
 		scores: baseGame.scores
 	    });
-	    delete(clientsConnected[socket.id]);
 	    console.log(leaver + " disconnected");
 	    io.emit("serverMessage", leaver + " has left.");
 	};
     });
     socket.on("entry", function(entry){
-	var person = clientsConnected[socket.id]["name"];
+	var person = socket.name;
 	if (person != baseGame.players[baseGame.whoseTurn] && checkChatEntry(entry)){
 	    io.emit("gameMessage", person + " has guessed the word, which was '" + baseGame.words[0][0] + baseGame.words[0][1] + "'.");
 	    baseGame.scorePlayer(person);
@@ -245,9 +244,9 @@ io.sockets.on("connection",function(socket){
 	};
     });
     socket.on("newUser", function(user){
-        if (! (socket.id in clientsConnected)){
-	    clientsConnected[socket.id] = {"name": user, "socket": socket};
-	    baseGame.addPlayer(user, socket);
+        if (! socket.name){
+	    socket.name = user;
+	    baseGame.addPlayer(socket);
 	    io.emit("gameUpdate", {
 		turn: baseGame.whoseTurn,
 		players: baseGame.players,
@@ -258,7 +257,7 @@ io.sockets.on("connection",function(socket){
         };
     });
     socket.on("requestClear", function(){
-	var player = clientsConnected[socket.id]["name"];
+	var player = socket.name;
 	if (player == baseGame.players[baseGame.whoseTurn]){
 	    socket.broadcast.emit("clearCanvas");
 	    io.emit("gameMessage", player + " has cleared the canvas.");
