@@ -27,9 +27,8 @@ var resetTimer = function() {
     setInterval(countdown, 1000);
 };
 
-var socket = io();
-var username = "{{username}}";
-socket.emit("newUser", username);
+var socket = io("127.0.0.1:5000/games");
+socket.emit("newUser", "{{username}}", "{{gameName}}");
 
 var canvas = $("#canvas");
 var ctx = canvas[0].getContext("2d");
@@ -98,9 +97,7 @@ clearButton.click(function(e){
     if (yourTurn && $.now() - lastEmit > 10){
 	e.preventDefault();
 	clearCanvas();
-	socket.emit("requestClear")
-	
-	//console.log ("clear success");
+	socket.emit("requestClear");
     };
 });
 

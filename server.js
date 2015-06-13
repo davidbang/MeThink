@@ -47,7 +47,7 @@ app.get('/', loginRequired, function(req, res){
 app.get(/game\/(.*)/, loginRequired, function(req, res){
     var host = req.params[0];
     if (host in games){
-	res.render("index.html", {username: req.session.name});
+	res.render("index.html", {username: req.session.name, gameName: host});
     }else{
 	res.send("Game not found"); //Placeholder
     };
@@ -124,6 +124,8 @@ var game = function(host){
     this.words = words;
     this.timer = 90;
     this.loop = 0;
+}
+(function(){
     this.nextTurn = function(){
 	this.timer = 90;
         this.whoseTurn += 1;
@@ -146,7 +148,7 @@ var game = function(host){
 	    };
             this.whoseTurn = 0;
         };
-	this.playerSockets[this.players[this.whoseTurn]].emit("gameMessage", "Your word is " + this.words[0][0] + "," + this.words[0][1] + ".");
+	this.playerSockets[this.players[this.whoseTurn]].emit("gameMessage", "Your word is " + this.words[0][0] + " " + this.words[0][1] + ".");
 	io.emit("nextTurn");
 	io.emit("clearCanvas");
     };
@@ -185,7 +187,7 @@ var game = function(host){
 	    });
 	};
     };
-};
+}).call(game.prototype);
 
 var createNewGame = function(user){
     if (! (user in games)){
@@ -194,11 +196,10 @@ var createNewGame = function(user){
 };
 
 games[1] = new game();
-var baseGame = games[1];
 
-var checkChatEntry = function(entry){
+var checkChatEntry = function(entry, game){
     if (entry != ""){
-	return entry.toLowerCase().replace(/ /g,'') == baseGame.words[0][0] + baseGame.words[0][1];
+	return entry.toLowerCase().replace(/ /g,'') == game.words[0][0] + game.words[0][1];
 	//return true if it is .lowercase
 	//account for trailing spaces and other anomalies
     };
@@ -208,63 +209,73 @@ server.listen(5000, function(){
     console.log("Server started on port 5000");
 });
 
-io.sockets.on("connection",function(socket){
-    socket.on("move", function(data){
-	var person = socket.name;
-	if (person == baseGame.players[baseGame.whoseTurn]){
-	    //only player whose turn it is to draw can draw
-            socket.broadcast.emit("draw",data);
-	};
+io.of("/lobby").on("conection", function(socket){
+
+});
+
+io.of("/games").on("connection", function(socket){
+    socket.on("newUser", function(user, gameName){
+        if (! socket.name){
+	    socket.name = user;
+	    socket.game = gameName;
+	    var playerGame = games[socket.game];
+	    playerGame.addPlayer(socket);
+	    io.to(socket.game).emit("gameUpdate", {
+		turn: playerGame.whoseTurn,
+		players: playerGame.players,
+		scores: playerGame.scores
+	    });
+	    console.log(user + " connected");
+	    socket.broadcast.to(socket.game).emit("serverMessage", user + " has joined.");
+        };
     });
     socket.on("disconnect", function(){
 	if (socket.name){
 	    var leaver = socket.name;
-	    baseGame.removePlayer(leaver);
-	    io.emit("gameUpdate", {
-		turn: baseGame.whoseTurn,
-		players: baseGame.players,
-		scores: baseGame.scores
+	    var playerGame = games[socket.game];
+	    playerGame.removePlayer(leaver);
+	    io.to(socket.game).emit("gameUpdate", {
+		turn: playerGame.whoseTurn,
+		players: playerGame.players,
+		scores: playerGame.scores
 	    });
 	    console.log(leaver + " disconnected");
-	    io.emit("serverMessage", leaver + " has left.");
+	    io.to(socket.game).emit("serverMessage", leaver + " has left.");
+	};
+    });
+    socket.on("move", function(data){
+	var person = socket.name;
+	var playerGame = games[socket.game];
+	if (person == playerGame.players[playerGame.whoseTurn]){
+	    //only player whose turn it is to draw can draw
+            socket.broadcast.to(socket.game).emit("draw", data);
 	};
     });
     socket.on("entry", function(entry){
 	var person = socket.name;
-	if (person != baseGame.players[baseGame.whoseTurn] && checkChatEntry(entry)){
-	    io.emit("gameMessage", person + " has guessed the word, which was '" + baseGame.words[0][0] + baseGame.words[0][1] + "'.");
-	    baseGame.scorePlayer(person);
-	    io.emit("gameUpdate", {
-		turn: baseGame.whoseTurn,
-		players: baseGame.players,
-		scores: baseGame.scores
+	var playerGame = games[socket.game];
+	if (person != playerGame.players[playerGame.whoseTurn] && checkChatEntry(entry, playerGame)){
+	    io.to(socket.game).emit("gameMessage", person + " has guessed the word, which was '" + playerGame.words[0][0] + playerGame.words[0][1] + "'.");
+	    playerGame.scorePlayer(person);
+	    io.to(socket.game).emit("gameUpdate", {
+		turn: playerGame.whoseTurn,
+		players: playerGame.players,
+		scores: playerGame.scores
 	    });
 	};
 	if (entry != ""){
-	    socket.broadcast.emit("entry", {
+	    socket.broadcast.to(socket.game).emit("entry", {
 		msg: entry,
 		user: person
             });
 	};
     });
-    socket.on("newUser", function(user){
-        if (! socket.name){
-	    socket.name = user;
-	    baseGame.addPlayer(socket);
-	    io.emit("gameUpdate", {
-		turn: baseGame.whoseTurn,
-		players: baseGame.players,
-		scores: baseGame.scores
-	    });
-	    console.log(user + " connected");
-	    socket.broadcast.emit("serverMessage", user + " has joined.");
-        };
-    });
     socket.on("requestClear", function(){
 	var player = socket.name;
-	if (player == baseGame.players[baseGame.whoseTurn]){
-	    socket.broadcast.emit("clearCanvas");
-	    io.emit("gameMessage", player + " has cleared the canvas.");
+	var playerGame = games[socket.game];
+	if (player == playerGame.players[playerGame.whoseTurn]){
+	    socket.broadcast.to(socket.game).emit("clearCanvas");
+	    io.to(socket.game).emit("gameMessage", player + " has cleared the canvas.");
 	};
     });
 });
