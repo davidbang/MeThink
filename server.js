@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({
 var loginRequired = function(req, res, next){
     //if user logged in
     if (req.session.name){
-        next();
+	next();
     }else{
         res.redirect('/login');
     };
@@ -37,7 +37,13 @@ var noLoginRequired = function(req, res, next){
     };
 };
 
+var games = {};
+
 //routes here
+app.get('/', loginRequired, function(req, res){
+    res.render("index.html", {username: req.session.name});
+});
+
 app.get('/', loginRequired, function(req, res){
     res.render("index.html", {username: req.session.name});
 });
@@ -121,12 +127,12 @@ var game = function(){
 	    if (this.loop == 2){
 		//End the game if 2 rotations of rounds have been played
 		var max = 0;
-		for (player in players){
-		    var score = scores[player];
+		for (var player in this.scores){
+		    var score = this.scores[player];
 		    if (score > max){
 			max = score;
 			this.winners = [player];
-		    }else if (scores[player] == max){
+		    }else if (this.scores[player] == max){
 			this.winners.push(player);
 		    };
 		};
@@ -175,7 +181,13 @@ var game = function(){
 };
 
 var clientsConnected = {};
-var games = {};
+
+var createNewGame = function(user){
+    if (! (user in games)){
+	games[user] = new game();
+	
+    };
+};
 
 games[1] = new game();
 var baseGame = games[1];
@@ -255,7 +267,7 @@ io.sockets.on("connection",function(socket){
 });
 
 var updateGameTimers = function(){
-    for (g in games){
+    for (var g in games){
 	if (games[g].started){
 	    games[g].countDown();
 	};
