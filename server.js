@@ -44,8 +44,13 @@ app.get('/', loginRequired, function(req, res){
     res.render("index.html", {username: req.session.name});
 });
 
-app.get('/', loginRequired, function(req, res){
-    res.render("index.html", {username: req.session.name});
+app.get(/game\/(.*)/, loginRequired, function(req, res){
+    var host = req.params[0];
+    if (host in games){
+	res.render("index.html", {username: req.session.name});
+    }else{
+	res.send("Game not found"); //Placeholder
+    };
 });
 
 app.get('/client.js', function(req,res){
@@ -108,7 +113,8 @@ var words = [
     ["table", "cloth"]//read in from db later
 ];
 
-var game = function(){
+var game = function(host){
+    this.host = host;
     this.players = [];
     this.playerSockets = {};
     this.scores = {};
@@ -144,7 +150,8 @@ var game = function(){
 	io.emit("nextTurn");
 	io.emit("clearCanvas");
     };
-    this.addPlayer = function(player, socket){
+    this.addPlayer = function(socket){
+	var player = socket.name;
         if (! this.started){
             this.players.push(player);
             this.scores[player] = 0;
@@ -180,12 +187,9 @@ var game = function(){
     };
 };
 
-//var clientsConnected = {};
-
 var createNewGame = function(user){
     if (! (user in games)){
-	games[user] = new game();
-	
+	games[user] = new game(user);
     };
 };
 
