@@ -8,7 +8,17 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/flatly/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-     .table-hover td {color: black; font-size:20px; text-align:left;}
+     .table-hover, td, tr{
+     position:relative;
+     z-index: 250;
+     color: black;
+     font-size:35px; 
+     text-align:left;
+     border-spacing: 2px;
+     }
+     td:hover {
+     background-color: lightyellow;
+     }
     </style>
   </head>
 
@@ -26,17 +36,17 @@
 	<strong>Error!</strong> {{error}}
       </div>
       {% endif %}
-      <div class="container" style="width: 1300px; height: 1500px;padding:10px;z-index:200"> 
+      <div class="container" style="position:relative; top:-60px; width: 1300px; height: 1000px;padding:10px;z-index:200"> 
 	<h1>
 	  <font size="10" face="Comic sans MS">
-	    Lobby- {{username}}
+	    Lobby:{{username}}
 	  </font>	
 	</h1>
 	<form> <button id="makeGame" type="button" class="btn btn-info" style="position:relative;top:-100px;left:380px;z-index: 100;"> Create a Game </button></form>
-	<div class="jumbotron" style="height:1000px;width:1100px;z-index:200">
-	    <table class="table-hover" id="lobbyTable"> <tr> Active Games </tr>
+	<font color="black"><div class="jumbotron" style="max-height:1000px;min-height:600px;overflow-y:auto;width:1000px;position:relative;z-index:200;font-size: 50px;top:-20px;right:100px;font-color:#000000;padding-top:10px;">
+	    <table class="table-hover" id="lobbyTable" style="position:relative;z-index: 250;color:#000000;font-size:30px;"> <tr> Active Games </tr> 
 	    </table>
-	</div>
+	</div> </font>
       </div>
       
       <ul class="bg-bubbles">
