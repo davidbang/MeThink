@@ -6,6 +6,7 @@ var createGameButton = $("#makeGame");
 
 createGameButton.click(function(e) {
     socket.emit("createGame");
+    window.open("/game/" + username);
     //redirects to new game page, adds to table of games on lobby page
 });
 
