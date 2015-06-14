@@ -7,22 +7,26 @@ var mouse = {
 var startGame = false;
 var RealPlayerList = ["{{username}}"];
 
+var time = 90;
+var interval = null;
+
 var resetTimer = function() {
-    var time = 90;
-    var startTime = Date.now(),
-	diff,
-        minutes,
-        seconds;
+    if (interval != null || time <= 0) {
+	clearInterval (interval);
+	interval = null;
+    };
+    time = 90;
+    
     function countdown() {
-	diff = time - (((Date.now() - startTime) / 1000) | 0);
-	seconds = (diff) | 0;
+	time = time - 1;
+	seconds = time;
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
         document.getElementById("timer").innerHTML = "Timer: " + seconds;
     };
 
     countdown();
-    setInterval(countdown, 1000);
+    interval = setInterval(countdown, 1000);
 };
 
 var socket = io("127.0.0.1:5000/games");
@@ -43,6 +47,9 @@ var drawLine = function(x1, y1, x2, y2){
     ctx.lineTo(x2, y2);
     ctx.stroke();
 };
+
+var chatScroll = document.getElementById ("chatbody");
+chatScroll.scrollTop = chatScroll.scrollHeight;
 
 canvas.on("mousedown", function(e){
     drawing = true;
@@ -110,15 +117,18 @@ var playerList = $("#names");
 
 var appendToChat = function(text){
     chat.append("<tr><td>" + text + "</td></tr>");
+    chatScroll.scrollTop = chatScroll.scrollHeight;
 };
 
 var appendEntryToChat = function(data){
     var text = "<b>" + data["user"] + "</b>" + ": " + data["msg"];
     appendToChat(text);
+    chatScroll.scrollTop = chatScroll.scrollHeight;
 };
 
 var appendGameMsgToChat = function(data){
     appendToChat("<b style='color:red'>" + data + "</b>");
+    chatScroll.scrollTop = chatScroll.scrollHeight;
 };
 
 var processMsg = function(){

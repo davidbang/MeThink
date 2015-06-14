@@ -74,6 +74,13 @@
       overflow-y: auto;
       height: 500px;
       }
+      div.layout
+      {
+      text-align: center;
+      }
+      td, table, tr{
+      text-align: left;
+      }
     </style>
   </header>
   <head>
@@ -84,7 +91,7 @@
 
   </head>
   <body>
-    <center>
+    <div class="layout">
     <div class="wrapper" style="margin-top:0px">
       <div class="container" style="font-size: 80px; height:100px; padding: 10px"> 
 	<h2>MeThink: Player Name {{username}}</h2> <span align="right" id="timer" style="position:relative;top:-100px;left:380px;color: #ff00ff;font-size: 30px;z-index: 100;"> Timer </span>
@@ -98,17 +105,17 @@
 	  <div class="jumbotron" id="firstjumbo"  width="370" height="600" style="padding:0px;float:right;">
 	      <div class="panel panel-primary">
 		<div class="panel-heading">
-		  <span class="glyphicon glyphicon-comment"></span> Chat
+		  <span class="glyphicon glyphicon-comment"></span style="text-align: center"> Chat
 		</div>
 	      </div>
-	      <div class="panel-body" style="margin-top:-30px;margin-bottom:-20px">
+	      <div class="panel-body" id="chatbody" style="margin-top:-30px;margin-bottom:-20px">
 		<table class="chat" id="innerchat" align="left" style="color:black">
 		</table>
 	      </div>
 	      <div class="panel-footer" style="margin-bottom:-30px;padding: 0px;">
 		<span class="inputgroup">
 		  <form style="color:black">
-		    {{username}} <input type="text" id="message" class="form-control input-sm" style="test-align: left; width:200px; display:inline; color: black" align="left" placeholder="Type your message here..." >
+		    {{username}} <input type="text" id="message" class="form-control input-sm" style="text-align:left; width:200px; display:inline; color: black" align="left" placeholder="Type your message here..." >
 		    <button class="btn btn-warning btn-sm" id="chatbutton" style="width:80px">
 		      Send</button>
 		  </form>
@@ -117,13 +124,13 @@
 	  </div>
 	  <div class="panel panel-primary" style="height:300px; width:120px; padding:0px;position:absolute;right:370px;">
 	    <div class="panel-heading" style="width:120px;height:40px;padding:0px;margin:0px;margin-bottom:0px;float:center;"><span align="center">Username:Score</span></div>
-	    <div class="panel-body" align="left" style="height:240px;width:120px;"><br> <br>
+	    <div class="panel-body" align="left" style="text-align:left; height:240px;width:120px;"><br> <br>
 	      <table id="names" align="left" style="text-align:left; color:black; border-style:solid; border-width:0px;"> <thead> <tr> <th> Username: </th> <th> Score </th></tr></thead>
 	      </table>
 	    </div>
 	  </div>
 	</div>
-    </center>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="{{gameName}}/client.js"></script>
 	<ul class="bg-bubbles">
