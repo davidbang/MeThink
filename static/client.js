@@ -64,8 +64,8 @@ canvas.on("mouseup mouseleave", function(){
 var lastEmit = $.now();
 
 canvas.on("mousemove", function(e){
-    if (drawing && yourTurn && $.now() - lastEmit > 10){
-        var newX = e.pageX - canvas.offset().left;
+    if (drawing && yourTurn && startGame && $.now() - lastEmit > 10){      
+	var newX = e.pageX - canvas.offset().left;
         var newY = e.pageY - canvas.offset().top;
         socket.emit("move", {
             oldX: mouse.x,

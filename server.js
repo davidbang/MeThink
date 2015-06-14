@@ -317,8 +317,7 @@ gameNSP.on("connection", function(socket){
     socket.on("move", function(data){
 	var person = socket.name;
 	var playerGame = games[socket.game];
-	if (person == playerGame.players[playerGame.whoseTurn]){
-	    //only player whose turn it is to draw can draw
+	if (playerGame.started && person == playerGame.players[playerGame.whoseTurn]){ 	    //only player whose turn it is to draw can draw
             socket.broadcast.to(socket.game).emit("draw", data);
 	};
     });
