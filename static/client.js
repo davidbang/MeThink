@@ -207,3 +207,13 @@ socket.on("winners", function(winnerList){
     $("#myModal").modal('show');
     socket.disconnect();
 });
+
+socket.on("hostDisconnect", function(){
+    appendToChat("<i>The host has disconnected, ending the game.</i>");
+    socket.disconnect();
+});
+
+socket.on("joinError", function(msg){
+    appendToChat("<i>" + msg + "</i>");
+    socket.disconnect();
+});

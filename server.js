@@ -54,7 +54,6 @@ app.get(/^\/game\/([a-zA-Z0-9]*)$/, loginRequired, function(req, res){
 });
 
 app.get(/game\/(.*)\/client.js/, function(req,res){
-    console.log("Getting client: " + req.params[0]);
     res.render("client.js", {username: req.session.name, gameName: req.params[0]});
 });
 
@@ -146,6 +145,13 @@ var game = function(host){
     this.loop = 0;
 };
 game.prototype.deleteThisGame = function(){
+    var gameList = [];
+    for (var g in games){
+	if (g != this.host){
+	    gameList.push(g);
+	};
+    };
+    lobbyNSP.emit("gameListUpdate", gameList);
     delete(games[this.host]);
 };
 game.prototype.nextTurn = function(){
@@ -181,6 +187,11 @@ game.prototype.addPlayer = function(socket){
         this.players.push(player);
         this.scores[player] = 0;
 	this.playerSockets[player] = socket;
+	gameNSP.to(this.host).emit("gameUpdate", {
+	    turn: this.whoseTurn,
+	    players: this.players,
+	    scores: this.scores
+	});
     };
 };
 game.prototype.removePlayer = function(player){
@@ -192,10 +203,24 @@ game.prototype.removePlayer = function(player){
     this.players.splice(index,1);
     delete(this.scores[player]);
     delete(this.playerSockets[player]);
+    gameNSP.to(this.host).emit("gameUpdate", {
+	turn: this.whoseTurn,
+	players: this.players,
+	scores: this.scores
+    });
+    if (player == this.host){
+	gameNSP.to(this.host).emit("hostDisconnect");
+	this.deleteThisGame();
+    };
 };
 game.prototype.scorePlayer = function(player){
     this.scores[player] += 1;
     this.nextTurn();
+    gameNSP.to(this.host).emit("gameUpdate", {
+	turn: this.whoseTurn,
+	players: this.players,
+	scores: this.scores
+    });
 };
 game.prototype.countDown = function(){
     this.timer -= 1;
@@ -286,9 +311,11 @@ gameNSP.on("connection", function(socket){
 	    socket.game = gameName;
 	    var playerGame = games[socket.game];
 	    if (playerGame.started){
-		socket.emit("joinErorr", "This game is currently in progress!");
-	    }else if (socket.name in playerGame.players){
+		socket.emit("joinError", "This game is currently in progress!");
+		socket.game = null;
+	    }else if (playerGame.players.indexOf(socket.name) > -1){
 		socket.emit("joinError", "You have already joined this game in a different window.");
+		socket.game = null;
 	    }else{
 		socket.join(socket.game);
 		playerGame.addPlayer(socket);
@@ -305,13 +332,15 @@ gameNSP.on("connection", function(socket){
 	if (socket.name && socket.game){
 	    var leaver = socket.name;
 	    var playerGame = games[socket.game];
-	    playerGame.removePlayer(leaver);
-	    gameNSP.to(socket.game).emit("gameUpdate", {
-		turn: playerGame.whoseTurn,
-		players: playerGame.players,
-		scores: playerGame.scores
-	    });
-	    gameNSP.to(socket.game).emit("serverMessage", leaver + " has left.");
+	    if (playerGame){
+		playerGame.removePlayer(leaver);
+		gameNSP.to(socket.game).emit("gameUpdate", {
+		    turn: playerGame.whoseTurn,
+		    players: playerGame.players,
+		    scores: playerGame.scores
+		});
+		gameNSP.to(socket.game).emit("serverMessage", leaver + " has left.");
+	    };
 	};
     });
     socket.on("move", function(data){
