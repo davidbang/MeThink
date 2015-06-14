@@ -18,6 +18,9 @@ var resetTimer = function() {
     time = 90;
     
     function countdown() {
+	if (time <= 0) {
+	    time = 1;
+	};
 	time = time - 1;
 	var seconds = time;
         seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -191,6 +194,7 @@ socket.on("nextTurn", resetTimer);
 
 socket.on("startedGame", function(){
     startGame = true;
+    resetTimer();
     appendGameMsgToChat("The game has started!");
 });
 
