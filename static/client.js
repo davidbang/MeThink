@@ -196,10 +196,10 @@ socket.on("startedGame", function(){
 
 socket.on("winners", function(winnerList){
     var winners = ' ';
-    for (i in winnerList) {
-	winners = winners + ' '  + winnerList[i];
+    for (var i in winnerList) {
+	winners += ' '  + winnerList[i];
     };
+    $("#winnerann").html("Winner(s):" + winners); 
     $("#myModal").modal('show');
-    document.getElementById("winnerann").innerHTML = "Winner(s):" + winners;;
     socket.disconnect();
 });
