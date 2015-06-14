@@ -13,12 +13,15 @@ var lobbyTable = $("#lobbyTable");
 socket.on("gameListUpdate", function(games){
     lobbyTable.html("");
     console.log(games);
-    for (var game in games){
-	lobbyTable.append("<tr class='clickable' href=" + game +
-			  "><td>" + game + "'s game'</td></tr>");
+    for (var i in games){
+	var game = games[i];
+	lobbyTable.append($("<tr>")
+			  .append($("<td>")
+				  .attr("href", game)
+				  .text(game + "'s game")
+				  .click(function(){
+				      window.open("/game/" + $(this).attr("href"));
+				  })));
     };
 });
 
-$(".clickable").click(function(){
-    window.open("/game/" + $(this).data("href"));
-});
