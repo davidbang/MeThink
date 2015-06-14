@@ -233,6 +233,11 @@ game.prototype.countDown = function(){
 	});
     };
 };
+game.prototype.startThisGame = function(){
+    this.started = true;
+    this.playerSockets[this.players[this.whoseTurn]].emit("gameMessage", "Your word is " + this.words[0][0] + " " + this.words[0][1] + ".");
+    gameNSP.to(this.host).emit("clearCanvas");
+};
 
 var createNewGame = function(user){
     if (! (user in games)){
@@ -379,8 +384,8 @@ gameNSP.on("connection", function(socket){
 	if (socket.name && socket.game){
 	    var playerGame = games[socket.game];
 	    if (socket.name == playerGame.host){
-		playerGame.started = true;
 		gameNSP.to(socket.game).emit("startedGame");
+		playerGame.startThisGame();
 	    }else{
 		socket.emit("gameMessage", "You are not the host!");
 	    };

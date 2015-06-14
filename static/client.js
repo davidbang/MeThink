@@ -211,7 +211,7 @@ socket.on("winners", function(winnerList){
 	    winners += ', '  + winnerList[i];
 	};
     };
-    $("#winnerann").html("Winner(s):" + winners); 
+    $("#winnerann").html("Winner(s): " + winners); 
     $("#myModal").modal('show');
     socket.disconnect();
 });
