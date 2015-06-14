@@ -96,10 +96,8 @@ app.post('/register', function(req, res){
 	    req.session.name = name;
 	    //redirect to home page
             res.redirect('/');
-	    console.log("Registered under Libman Enterprises!");
 	}else{
 	    res.render("register.html");
-	    //console.log(msg);
 	};
     });
 });
@@ -353,7 +351,7 @@ gameNSP.on("connection", function(socket){
     socket.on("entry", function(entry){
 	var person = socket.name;
 	var playerGame = games[socket.game];
-	if (person != playerGame.players[playerGame.whoseTurn] && checkChatEntry(entry, playerGame)){
+	if (playerGame.started && person != playerGame.players[playerGame.whoseTurn] && checkChatEntry(entry, playerGame)){
 	    gameNSP.to(socket.game).emit("gameMessage", person + " has guessed the word, which was '" + playerGame.words[0][0] + playerGame.words[0][1] + "'.");
 	    playerGame.scorePlayer(person);
 	    gameNSP.to(socket.game).emit("gameUpdate", {

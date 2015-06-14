@@ -186,6 +186,11 @@ socket.on("gameMessage", function(data){
 socket.on("gameUpdate", function(data){
     updatePlayerList(data["scores"]);
     yourTurn = data["players"][data["turn"]] == "{{username}}";
+    if (yourTurn){
+	clearButton.show();
+    }else{
+	clearButton.hide();
+    };
 });
 
 socket.on("clearCanvas", clearCanvas);
@@ -194,14 +199,17 @@ socket.on("nextTurn", resetTimer);
 
 socket.on("startedGame", function(){
     startGame = true;
+    startButton.hide();
     resetTimer();
     appendGameMsgToChat("The game has started!");
 });
 
 socket.on("winners", function(winnerList){
-    var winners = ' ';
+    var winners = winnerList[0];
     for (var i in winnerList) {
-	winners += ' '  + winnerList[i];
+	if (i != 0){
+	    winners += ', '  + winnerList[i];
+	};
     };
     $("#winnerann").html("Winner(s):" + winners); 
     $("#myModal").modal('show');
