@@ -41,10 +41,12 @@ var games = {};
 
 //routes here
 app.get('/', loginRequired, function(req, res){
-    res.render("index.html", {username: req.session.name});
+    res.send("Lobby page placeholder. Go to /game/*, where * is the game host's name to get to the game screen."); //placeholder
+    res.end();
+    //res.render("lobby.html", {username: req.session.name});
 });
 
-app.get(/game\/(.*)/, loginRequired, function(req, res){
+app.get(/^\/game\/([a-zA-Z0-9]*)$/, loginRequired, function(req, res){
     var host = req.params[0];
     if (host in games){
 	res.render("index.html", {username: req.session.name, gameName: host});
@@ -53,8 +55,9 @@ app.get(/game\/(.*)/, loginRequired, function(req, res){
     };
 });
 
-app.get('/client.js', function(req,res){
-    res.render("client.js", {username: req.session.name});
+app.get(/game\/(.*)\/client.js/, function(req,res){
+    console.log("Getting client: " + req.params[0]);
+    res.render("client.js", {username: req.session.name, gameName: req.params[0]});
 });
 
 app.get('/login', noLoginRequired, function(req, res){
@@ -125,69 +128,68 @@ var game = function(host){
     this.timer = 90;
     this.loop = 0;
 }
-(function(){
-    this.nextTurn = function(){
-	this.timer = 90;
-        this.whoseTurn += 1;
-	this.words.splice(0,1);
-        if (this.whoseTurn >= this.players.length){
-	    this.loop += 1;
-	    if (this.loop == 2){
-		//End the game if 2 rotations of rounds have been played
-		var max = 0;
-		for (var player in this.scores){
-		    var score = this.scores[player];
-		    if (score > max){
-			max = score;
-			this.winners = [player];
-		    }else if (this.scores[player] == max){
-			this.winners.push(player);
-		    };
+game.prototype.nextTurn = function(){
+    this.timer = 90;
+    this.whoseTurn += 1;
+    this.words.splice(0,1);
+    if (this.whoseTurn >= this.players.length){
+	this.loop += 1;
+	if (this.loop == 2){
+	    //End the game if 2 rotations of rounds have been played
+	    var max = 0;
+	    for (var player in this.scores){
+		var score = this.scores[player];
+		if (score > max){
+		    max = score;
+		    this.winners = [player];
+		}else if (this.scores[player] == max){
+		    this.winners.push(player);
 		};
-		io.emit("winners", this.winners);
 	    };
-            this.whoseTurn = 0;
-        };
-	this.playerSockets[this.players[this.whoseTurn]].emit("gameMessage", "Your word is " + this.words[0][0] + " " + this.words[0][1] + ".");
-	io.emit("nextTurn");
-	io.emit("clearCanvas");
-    };
-    this.addPlayer = function(socket){
-	var player = socket.name;
-        if (! this.started){
-            this.players.push(player);
-            this.scores[player] = 0;
-	    this.playerSockets[player] = socket;
-        };
-    };
-    this.removePlayer = function(player){
-	if (player == this.players[this.whoseTurn]){
-	    this.whoseTurn -= 1;
-	    this.nextTurn();
+	    io.emit("winners", this.winners);
 	};
-        var index = this.players.indexOf(player);
-        this.players.splice(index,1);
-        delete(this.scores[player]);
-	delete(this.playerSockets[player]);
+        this.whoseTurn = 0;
     };
-    this.scorePlayer = function(player){
-        this.scores[player] += 1;
-        this.nextTurn();
+    this.playerSockets[this.players[this.whoseTurn]].emit("gameMessage", "Your word is " + this.words[0][0] + " " + this.words[0][1] + ".");
+    io.emit("nextTurn");
+    io.emit("clearCanvas");
+};
+game.prototype.addPlayer = function(socket){
+    var player = socket.name;
+    if (! this.started){
+        this.players.push(player);
+        this.scores[player] = 0;
+	this.playerSockets[player] = socket;
     };
-    this.countDown = function(){
-	this.timer -= 1;
-	if (this.timer <= 0){
-	    this.timer = 90;
-	    io.emit("gameMessage", "Time has run out with noone guessing the words!");
-	    this.nextTurn();
-	    io.emit("gameUpdate", {
-		turn: this.whoseTurn,
-		players: this.players,
-		scores: this.scores
-	    });
-	};
+};
+game.prototype.removePlayer = function(player){
+    if (player == this.players[this.whoseTurn]){
+	this.whoseTurn -= 1;
+	this.nextTurn();
     };
-}).call(game.prototype);
+    var index = this.players.indexOf(player);
+    this.players.splice(index,1);
+    delete(this.scores[player]);
+    delete(this.playerSockets[player]);
+};
+game.prototype.scorePlayer = function(player){
+    this.scores[player] += 1;
+    this.nextTurn();
+};
+game.prototype.countDown = function(){
+    this.timer -= 1;
+    if (this.timer <= 0){
+	this.timer = 90;
+	io.emit("gameMessage", "Time has run out with noone guessing the words!");
+	this.nextTurn();
+	io.emit("gameUpdate", {
+	    turn: this.whoseTurn,
+	    players: this.players,
+	    scores: this.scores
+	});
+    };
+};
+
 
 var createNewGame = function(user){
     if (! (user in games)){
@@ -196,6 +198,7 @@ var createNewGame = function(user){
 };
 
 games[1] = new game();
+games[2] = new game();
 
 var checkChatEntry = function(entry, game){
     if (entry != ""){
@@ -205,22 +208,60 @@ var checkChatEntry = function(entry, game){
     };
 };
 
+
 server.listen(5000, function(){
     console.log("Server started on port 5000");
 });
 
-io.of("/lobby").on("conection", function(socket){
-
-});
-
-io.of("/games").on("connection", function(socket){
-    socket.on("newUser", function(user, gameName){
+var lobbyUsers = [];
+var lobbyNSP = io.of("/lobby");
+lobbyNSP.on("conection", function(socket){
+    socket.on("newUser", function(user){
         if (! socket.name){
 	    socket.name = user;
+	    this.lobbyUsers.push(user);
+	    lobbyNSP.emit("lobbyUpdate", {
+		players: lobbyUsers
+	    });
+	    socket.broadcast.to(socket.game).emit("serverMessage", user + " has joined.");
+	};
+    });
+    socket.on("disconnect", function(){
+	if (socket.name){
+	    var leaver = socket.name;
+	    var index = this.lobbyUsers.indexOf(leaver);
+	    this.lobbyUsers.splice(index,1);
+	    lobbyNSP.emit("lobbyUpdate", {
+		players: lobbyUsers
+	    });
+	    socket.broadcast.emit("serverMessage", leaver + " has left.");
+	};
+    });
+    socket.on("entry", function(entry){
+	var person = socket.name;
+	if (entry != ""){
+	    socket.broadcast.emit("entry", {
+		msg: entry,
+		user: person
+            });
+	};
+    });
+    socket.on("createGame", function(user){
+	createNewGame(user);
+    });
+});
+
+var gameNSP = io.of("/games");
+gameNSP.on("connection", function(socket){
+    socket.on("newUser", function(user, gameName){
+        if (! socket.name && gameName != ""){
+	    socket.name = user;
 	    socket.game = gameName;
+	    console.log(socket.game);
+	    socket.join(socket.game);
 	    var playerGame = games[socket.game];
 	    playerGame.addPlayer(socket);
-	    io.to(socket.game).emit("gameUpdate", {
+	    gameNSP.to(socket.game).emit("gameUpdate", {
 		turn: playerGame.whoseTurn,
 		players: playerGame.players,
 		scores: playerGame.scores
@@ -230,17 +271,17 @@ io.of("/games").on("connection", function(socket){
         };
     });
     socket.on("disconnect", function(){
-	if (socket.name){
+	if (socket.name && socket.game){
 	    var leaver = socket.name;
 	    var playerGame = games[socket.game];
 	    playerGame.removePlayer(leaver);
-	    io.to(socket.game).emit("gameUpdate", {
+	    gameNSP.to(socket.game).emit("gameUpdate", {
 		turn: playerGame.whoseTurn,
 		players: playerGame.players,
 		scores: playerGame.scores
 	    });
 	    console.log(leaver + " disconnected");
-	    io.to(socket.game).emit("serverMessage", leaver + " has left.");
+	    gameNSP.to(socket.game).emit("serverMessage", leaver + " has left.");
 	};
     });
     socket.on("move", function(data){
@@ -255,9 +296,9 @@ io.of("/games").on("connection", function(socket){
 	var person = socket.name;
 	var playerGame = games[socket.game];
 	if (person != playerGame.players[playerGame.whoseTurn] && checkChatEntry(entry, playerGame)){
-	    io.to(socket.game).emit("gameMessage", person + " has guessed the word, which was '" + playerGame.words[0][0] + playerGame.words[0][1] + "'.");
+	    gameNSP.to(socket.game).emit("gameMessage", person + " has guessed the word, which was '" + playerGame.words[0][0] + playerGame.words[0][1] + "'.");
 	    playerGame.scorePlayer(person);
-	    io.to(socket.game).emit("gameUpdate", {
+	    gameNSP.to(socket.game).emit("gameUpdate", {
 		turn: playerGame.whoseTurn,
 		players: playerGame.players,
 		scores: playerGame.scores
@@ -275,10 +316,11 @@ io.of("/games").on("connection", function(socket){
 	var playerGame = games[socket.game];
 	if (player == playerGame.players[playerGame.whoseTurn]){
 	    socket.broadcast.to(socket.game).emit("clearCanvas");
-	    io.to(socket.game).emit("gameMessage", player + " has cleared the canvas.");
+	    gameNSP.to(socket.game).emit("gameMessage", player + " has cleared the canvas.");
 	};
     });
 });
+
 
 var updateGameTimers = function(){
     for (var g in games){

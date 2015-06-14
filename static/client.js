@@ -5,7 +5,7 @@ var mouse = {
     y: 0
 };
 var startGame = false;
-var RealPlayerList = [];
+var RealPlayerList = ["{{username}}"];
 
 var resetTimer = function() {
     var time = 90;
@@ -28,7 +28,8 @@ var resetTimer = function() {
 };
 
 var socket = io("127.0.0.1:5000/games");
-socket.emit("newUser", "{{username}}", "{{gameName}}");
+var username = "{{username}}";
+socket.emit("newUser", username, "{{gameName}}");
 
 var canvas = $("#canvas");
 var ctx = canvas[0].getContext("2d");
@@ -133,7 +134,7 @@ var updatePlayerList = function(scores){
 	//make start button visible
     };
     playerList.html("");
-    for (player in scores){
+    for (var player in scores){
 	playerList.append("<tr><td>" + player + ": </td><td>" + scores[player] + "</td></tr>");
     };
 };
