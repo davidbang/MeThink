@@ -41,9 +41,9 @@ var games = {};
 
 //routes here
 app.get('/', loginRequired, function(req, res){
-    res.send("Lobby page placeholder. Go to /game/*, where * is the game host's name to get to the game screen."); //placeholder
-    res.end();
-    //res.render("lobby.html", {username: req.session.name});
+    //res.send("Lobby page placeholder. Go to /game/*, where * is the game host's name to get to the game screen."); //placeholder
+    //res.end();
+    res.render("lobby.html", {username: req.session.name});
 });
 
 app.get(/^\/game\/([a-zA-Z0-9]*)$/, loginRequired, function(req, res){

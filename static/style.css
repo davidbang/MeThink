@@ -199,7 +199,7 @@ form button:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
 .bg-bubbles li:nth-child(10) {
-  left: 90%;
+  left: 80%;
   width: 160px;
   height: 160px;
   -webkit-animation-delay: 7s;
