@@ -246,8 +246,10 @@ lobbyNSP.on("conection", function(socket){
             });
 	};
     });
-    socket.on("createGame", function(user){
-	createNewGame(user);
+    socket.on("createGame", function(socket){
+	if (socket.name){
+	    createNewGame(socket.name);
+	};
     });
 });
 
