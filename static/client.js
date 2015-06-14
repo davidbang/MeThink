@@ -15,12 +15,10 @@ var resetTimer = function() {
         seconds;
     function countdown() {
 	diff = time - (((Date.now() - startTime) / 1000) | 0);
-	seconds = (diff % 60) | 0;
-
-	minutes = minutes < 10 ? "0" + minutes : minutes;
+	seconds = (diff) | 0;
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
-        document.getElementById("timer").innerHTML = "Timer: " + minutes + ":" + seconds;
+        document.getElementById("timer").innerHTML = "Timer: " + seconds;
     };
 
     countdown();
@@ -90,11 +88,14 @@ var startButton = $("#startGame");
 startButton.click(function(e) {
     if (RealPlayerList.length > 1 && !startGame){
 	startGame = true;
+	startButton.hide();
+	socket.emit("startGame");
     };
 });
 
 
 clearButton.click(function(e){
+    console.log ("Canvas Cleared");
     if (yourTurn && $.now() - lastEmit > 10){
 	e.preventDefault();
 	clearCanvas();
