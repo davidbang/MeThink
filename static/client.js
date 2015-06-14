@@ -188,3 +188,13 @@ socket.on("gameUpdate", function(data){
 socket.on("clearCanvas", clearCanvas);
 
 socket.on("nextTurn", resetTimer);
+
+socket.on("startedGame", function(){
+    startGame = true;
+    appendGameMsgToChat("The game has started!");
+});
+
+socket.on("winners", function(winnerList){
+    //make popup here
+    socket.disconnect();
+});
