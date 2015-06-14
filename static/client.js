@@ -19,7 +19,7 @@ var resetTimer = function() {
     
     function countdown() {
 	time = time - 1;
-	seconds = time;
+	var seconds = time;
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
         document.getElementById("timer").innerHTML = "Timer: " + seconds;

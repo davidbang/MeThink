@@ -218,6 +218,7 @@ var lobbyNSP = io.of("/lobby");
 lobbyNSP.on("conection", function(socket){
     socket.on("newUser", function(user){
         if (! socket.name){
+	    console.log("user");
 	    socket.name = user;
 	    this.lobbyUsers.push(user);
 	    lobbyNSP.emit("lobbyUpdate", {
@@ -249,6 +250,12 @@ lobbyNSP.on("conection", function(socket){
     socket.on("createGame", function(socket){
 	if (socket.name){
 	    createNewGame(socket.name);
+	    console.log("NEW GAME");
+	    var gameList = [];
+	    for (var g in games){
+		gameList.push(g);
+	    };
+	    lobbyNSP.emit("gameListUpdate", gameList);
 	};
     });
 });
