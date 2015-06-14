@@ -41,8 +41,6 @@ var games = {};
 
 //routes here
 app.get('/', loginRequired, function(req, res){
-    //res.send("Lobby page placeholder. Go to /game/*, where * is the game host's name to get to the game screen."); //placeholder
-    //res.end();
     res.render("lobby.html", {username: req.session.name});
 });
 
@@ -58,6 +56,10 @@ app.get(/^\/game\/([a-zA-Z0-9]*)$/, loginRequired, function(req, res){
 app.get(/game\/(.*)\/client.js/, function(req,res){
     console.log("Getting client: " + req.params[0]);
     res.render("client.js", {username: req.session.name, gameName: req.params[0]});
+});
+
+app.get("/lobby.js", function(req,res){
+    res.render("lobby.js", {username: req.session.name});
 });
 
 app.get('/login', noLoginRequired, function(req, res){
@@ -215,12 +217,11 @@ server.listen(5000, function(){
 
 var lobbyUsers = [];
 var lobbyNSP = io.of("/lobby");
-lobbyNSP.on("conection", function(socket){
+lobbyNSP.on("connection", function(socket){
     socket.on("newUser", function(user){
         if (! socket.name){
-	    console.log("user");
 	    socket.name = user;
-	    this.lobbyUsers.push(user);
+	    lobbyUsers.push(user);
 	    lobbyNSP.emit("lobbyUpdate", {
 		players: lobbyUsers
 	    });
@@ -230,8 +231,8 @@ lobbyNSP.on("conection", function(socket){
     socket.on("disconnect", function(){
 	if (socket.name){
 	    var leaver = socket.name;
-	    var index = this.lobbyUsers.indexOf(leaver);
-	    this.lobbyUsers.splice(index,1);
+	    var index = lobbyUsers.indexOf(leaver);
+	    lobbyUsers.splice(index,1);
 	    lobbyNSP.emit("lobbyUpdate", {
 		players: lobbyUsers
 	    });
@@ -247,10 +248,9 @@ lobbyNSP.on("conection", function(socket){
             });
 	};
     });
-    socket.on("createGame", function(socket){
+    socket.on("createGame", function(){
 	if (socket.name){
 	    createNewGame(socket.name);
-	    console.log("NEW GAME");
 	    var gameList = [];
 	    for (var g in games){
 		gameList.push(g);

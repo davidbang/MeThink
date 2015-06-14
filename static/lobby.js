@@ -10,9 +10,10 @@ createGameButton.click(function(e) {
 });
 
 var lobbyTable = $("#lobbyTable");
-socket.on("lobbyUpdate", function(games){
+socket.on("gameListUpdate", function(games){
     lobbyTable.html("");
-    for (var game in games.sort()){
+    console.log(games);
+    for (var game in games){
 	lobbyTable.append("<tr class='clickable' href=" + game +
 			  "><td>" + game + "'s game'</td></tr>");
     };
