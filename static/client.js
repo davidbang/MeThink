@@ -142,7 +142,7 @@ var processMsg = function(){
 var updatePlayerList = function(scores){
     RealPlayerList = Object.keys(scores);
     if (RealPlayerList.length > 1 && ! startGame){
-	//make start button visible
+	startButton.show();
     };
     playerList.html("");
     for (var player in scores){
@@ -195,6 +195,11 @@ socket.on("startedGame", function(){
 });
 
 socket.on("winners", function(winnerList){
-    //make popup here
+    var winners = ' ';
+    for (i in winnerList) {
+	winners = winners + ' '  + winnerList[i];
+    };
+    $("#myModal").modal('show');
+    document.getElementById("winnerann").innerHTML = "Winner(s):" + winners;;
     socket.disconnect();
 });

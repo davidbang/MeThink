@@ -86,6 +86,7 @@
   <head>
       <title>Drawing</title>
       <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/flatly/bootstrap.min.css">
     <link rel="stylesheet" href="../style.css">
 
@@ -93,6 +94,22 @@
   <body>
     <div class="layout">
     <div class="wrapper" style="margin-top:0px">
+      <div class="modal" id="myModal" style="z-index:1000;">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+	    <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Announcement</h4>
+	    </div>
+	    <div class="modal-body" id="winnerann">
+              <p> Winner(s): </p>
+	    </div>
+	    <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Confirm</button>
+	    </div>
+	  </div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+      </div>
       <div class="container" style="font-size: 80px; height:100px; padding: 10px"> 
 	<h2>MeThink: Player Name {{username}}</h2> <span align="right" id="timer" style="position:relative;top:-100px;left:380px;color: #ff00ff;font-size: 30px;z-index: 100;"> Timer </span>
       </div>
