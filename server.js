@@ -246,13 +246,9 @@ var createNewGame = function(user){
     };
 };
 
-games[1] = new game();
-games[2] = new game();
-
 var checkChatEntry = function(entry, game){
     return entry != "" && entry.toLowerCase().replace(/ /g,'') == game.words[0][0] + game.words[0][1];
 };
-
 
 server.listen(5000, function(){
     console.log("Server started on port 5000");
