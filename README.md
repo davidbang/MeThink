@@ -11,7 +11,8 @@ A real time pictionary game made with Node.js and Socket.io to provide real time
 2. Install MongoDB on your server
 3. Clone MeThink onto your server
 4. Run `npm install express` to install all the dependencies
-5. Configure your server to deploy server.js: [An example tutorial](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-14-04)
+5. Change the IP addresses that io connects to in lobby.js and client.js from 127.0.0.1:5000 to your server's IP address
+6. Configure your server to deploy server.js: [An example tutorial](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-14-04)
 
 ##Roles:
 
