@@ -96,7 +96,9 @@ var clearButton = $("#clearCanv");
 var startButton = $("#startGame");
 
 startButton.click(function(e) {
-    if (RealPlayerList.length > 1 && !startGame){
+    if (RealPlayerList.length < 2){
+	appendGameMsgToChat("You need at least 2 players to start.");
+    }else if (!startGame){
 	startGame = true;
 	startButton.hide();
 	socket.emit("startGame");
