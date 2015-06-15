@@ -112,7 +112,22 @@ var words = [
     ["peanut", "butter"],
     ["fish", "sticks"],
     ["water", "melon"],
-    ["table", "cloth"]//read in from db later
+    ["table", "cloth"],
+    ["pine", "apple"],
+    ["pepper", "jack"],
+    ["tree", "house"],
+    ["white", "board"],
+    ["scar","city"],
+    ["pad", "lock"],
+    ["black", "smith"],
+    ["cross", "bow"],
+    ["boot", "strap"],
+    ["horse","back"],
+    ["super","script"],
+    ["foot", "ball"],
+    ["rattle", "snake"],
+    ["rail", "road"]
+    //read in from db later
 ];
 
 var shuffleArray = function(array){
