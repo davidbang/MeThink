@@ -3,6 +3,8 @@
 ##Description:
 **Hosted on http://104.236.41.235/**
 
+**Video Turotial: https://www.youtube.com/watch?v=mC-YFc-L9J8&feature=youtu.be**
+
 A real time pictionary game made with Node.js and Socket.io to provide real time communication functionality, with Express used as the web framework. Multiple users are able to join a game room and have the ability to draw on the canvas when it is their turn, while other players attempt to guess the depiction/word combination. Each player gains a point when they win the round. The players with the most points are declared the winners after two rounds of gameplay. 
 
 ##Installation Instructions:
