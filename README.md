@@ -1,67 +1,21 @@
-# MeThinkΩ
+# MeThink
+
 ##Description:
 
-Real Time Pictionary using Node.js. Uses socket.io and express to provide real time communication functionality. Multiple users will be able to join a game room and have the ability to draw on the canvas, while other players attempt to guess the depiction/word. A library of the game objects will be implemented in which users can add objects. Potential extensions to the application are that it can be used as a real time service in which users interact with each other on a communal canvas.
+**Hosted on http://104.236.41.235/**
 
-##Timeline:
-
-<i>Done</i> - Have accounts working.
-
-<i>Done</i> - Have routing for various pages. Pretty-ify!
-
-<i>Done</i> - Have lobby on the dual-page screen that allows multiple people to connect.
-
-<i>Chat done, need to end round.</i> - Working chat in lobby. If someone types answer in chat, end round.
-
-5/15 - Keep track of score. When round ends, next person gets to draw.
-
-5/18 - Have two pages on the screen that are interactable. Give word to first player (and placeholder for second player).
-
---Other stuff, such as upgrades to profile to keep track of stats or even images--
-
---Additional features with enough time--
+A real time pictionary game made with Node.js and Socket.io to provide real time communication functionality, with Express used as the web framework. Multiple users are able to join a game room and have the ability to draw on the canvas when it is their turn, while other players attempt to guess the depiction/word combination. Each player gains a point when they win the round. The players with the most points are declared the winners after two rounds of gameplay. 
 
 ##Installation Instructions:
-Install Node.js from https://nodejs.org/.
-
-Extract files.
-
-Cd into node-version-<Varies for node version>
-
-Run in virtual enviroment in the node directory
-
-./configure
-
-make
-
-sudo make install
-
-afterwards go to project folder (MeThink) and install all neccessary frameworks.
-
-npm install express
-
-npm install http
-
-npm install swig
-
-npm install path
-
-npm install mongojs
-
-npm install socket.io
-
-npm install body-parser
-
-npm install express-session
-
-
-After installing everything, input into command line
-
-node server.js to run our project
+1. Install Node.js from https://nodejs.org/ on your server
+2. Install MongoDB on your server
+3. Clone MeThink onto your server
+4. Run `npm install express` to install all the dependencies
+5. Configure your server to deploy server.js: [An example tutorial](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-14-04)
 
 ##Roles:
 
-Alex Libman: Database + Websocket
+Alex Libman: Database + Websocket + Game Logic
 
 David Bang: CSS + backup routing
 
