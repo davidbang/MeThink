@@ -24,7 +24,7 @@ var resetTimer = function() {
 	time = time - 1;
 	var seconds = time;
         seconds = seconds < 10 ? "0" + seconds : seconds;
-	$("#timer").html("Timer: " + seconds);
+       	document.getElementById("timer").innerHTML = "Timer: " + seconds;
     };
 
     countdown();
