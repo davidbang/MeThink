@@ -175,6 +175,7 @@ game.prototype.nextTurn = function(){
 	};
         this.whoseTurn = 0;
     };
+    gameNSP.to(this.host).emit("gameMessage", "It is now " + this.players[this.whoseTurn] + "'s turn.");
     this.playerSockets[this.players[this.whoseTurn]].emit("gameMessage", "Your word is " + this.words[0][0] + " " + this.words[0][1] + ".");
     gameNSP.to(this.host).emit("nextTurn");
     gameNSP.to(this.host).emit("clearCanvas");
@@ -213,12 +214,12 @@ game.prototype.removePlayer = function(player){
 };
 game.prototype.scorePlayer = function(player){
     this.scores[player] += 1;
-    this.nextTurn();
     gameNSP.to(this.host).emit("gameUpdate", {
 	turn: this.whoseTurn,
 	players: this.players,
 	scores: this.scores
     });
+    this.nextTurn();
 };
 game.prototype.countDown = function(){
     this.timer -= 1;
@@ -245,13 +246,9 @@ var createNewGame = function(user){
     };
 };
 
-games[1] = new game();
-games[2] = new game();
-
 var checkChatEntry = function(entry, game){
     return entry != "" && entry.toLowerCase().replace(/ /g,'') == game.words[0][0] + game.words[0][1];
 };
-
 
 server.listen(5000, function(){
     console.log("Server started on port 5000");
@@ -313,7 +310,10 @@ gameNSP.on("connection", function(socket){
 	    socket.name = user;
 	    socket.game = gameName;
 	    var playerGame = games[socket.game];
-	    if (playerGame.started){
+	    if (! playerGame){
+		socket.emit("joinError", "This game is not set up.");
+		socket.game = null;
+	    }else if (playerGame.started){
 		socket.emit("joinError", "This game is currently in progress!");
 		socket.game = null;
 	    }else if (playerGame.players.indexOf(socket.name) > -1){
@@ -356,20 +356,22 @@ gameNSP.on("connection", function(socket){
     socket.on("entry", function(entry){
 	var person = socket.name;
 	var playerGame = games[socket.game];
-	if (playerGame.started && person != playerGame.players[playerGame.whoseTurn] && checkChatEntry(entry, playerGame)){
-	    gameNSP.to(socket.game).emit("gameMessage", person + " has guessed the word, which was '" + playerGame.words[0][0] + playerGame.words[0][1] + "'.");
-	    playerGame.scorePlayer(person);
-	    gameNSP.to(socket.game).emit("gameUpdate", {
-		turn: playerGame.whoseTurn,
-		players: playerGame.players,
-		scores: playerGame.scores
-	    });
-	};
-	if (entry != ""){
-	    socket.broadcast.to(socket.game).emit("entry", {
-		msg: entry,
-		user: person
-            });
+	if (playerGame){
+	    if (playerGame.started && person != playerGame.players[playerGame.whoseTurn] && checkChatEntry(entry, playerGame)){
+		gameNSP.to(socket.game).emit("gameMessage", person + " has guessed the word, which was '" + playerGame.words[0][0] + playerGame.words[0][1] + "'.");
+		playerGame.scorePlayer(person);
+		gameNSP.to(socket.game).emit("gameUpdate", {
+		    turn: playerGame.whoseTurn,
+		    players: playerGame.players,
+		    scores: playerGame.scores
+		});
+	    };
+	    if (entry != ""){
+		socket.broadcast.to(socket.game).emit("entry", {
+		    msg: entry,
+		    user: person
+		});
+	    };
 	};
     });
     socket.on("requestClear", function(){
