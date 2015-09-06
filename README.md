@@ -1,7 +1,6 @@
 # MeThink
 
 ##Description:
-**Hosted on http://104.236.41.235/**
 
 **Video Tutorial: https://www.youtube.com/watch?v=mC-YFc-L9J8&feature=youtu.be**
 
